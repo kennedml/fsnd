@@ -10,6 +10,8 @@ int main(int argc, char **argv)
         printf("%s %d %s print_help() failed. Errno: %d. \n",
                __FILE__,__LINE__,__func__, rc);
     }
+    if(verbose){printf("verbose=true\n");}
+    else{printf("verbose=false\n");}
     return(0);
 }
 
