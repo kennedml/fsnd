@@ -13,9 +13,9 @@ int fsnd_listen()
     // File Descriptors
     int listen_fd = 0;
     int conn_fd = 0;
-    
+    int n = 1025;
     struct sockaddr_in serv_addr;
-    char send_buffer[1025];
+    char *buffer = (char*)calloc(n, sizeof(char*));
 
     // TODO - add verbosity
     listen_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -32,7 +32,7 @@ int fsnd_listen()
     printf("fd: %d\n", listen_fd);
     
     memset(&serv_addr, 0, sizeof(serv_addr));
-    memset(send_buffer, 0, sizeof(send_buffer));
+    memset(&buffer, 0, sizeof(buffer));
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -97,6 +97,6 @@ int fsnd_listen()
         sleep(1);
     }
 
-
+    free(buffer);
     return 0;
 }
