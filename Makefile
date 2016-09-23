@@ -1,1 +1,20 @@
-gcc -o fsnd fsnd_server.c fsnd_client.c fsnd_utilities.c main.c
+CPP=gcc
+CFLAGS=-g -Wall
+LDFLAGS=
+SOURCES=main.c fsnd_server.c fsnd_client.c fsnd_utilities.c
+OBJECTS=$(SOURCES:.c=.o)
+EXECUTABLE=fsnd
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CPP) $(LDFLAGS) $(OBJECTS) -o $@
+
+%.o: %.c Makefile
+	$(CPP) $(CFLAGS) -c -o $@ $<
+
+%.o: %.c %.h Makefile
+	$(CPP) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f *.o fsnd
