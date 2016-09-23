@@ -10,48 +10,49 @@
 
 int fsnd_listen()
 {
-    int listenfd = 0;
-    int connfd = 0;
+    // File Descriptors
+    int listen_fd = 0;
+    int conn_fd = 0;
+    
     struct sockaddr_in serv_addr;
-    char sendBuff[1025];
-    int numrv;
-    int option = 1;
+    char send_buffer[1025];
 
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(listenfd == -1)
+    // TODO - add verbosity
+    listen_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if(listen_fd == -1)
     {
-	perror("socket");
+	perror("socket failure");
 	exit(EXIT_FAILURE);
     }
-    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+   
+
+    // TODO - add verbosity
     printf("Socket retrieve success\n");
     
-    printf("fd: %d\n", listenfd);
-    memset(&serv_addr, '0', sizeof(serv_addr));
-    memset(sendBuff, '0', sizeof(sendBuff));
+    printf("fd: %d\n", listen_fd);
+    
+    memset(&serv_addr, 0, sizeof(serv_addr));
+    memset(send_buffer, 0, sizeof(send_buffer));
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(5000);
 
-    if(bind(listenfd, (struct sockaddr*)&serv_addr,sizeof(serv_addr)) == -1)
+    // TODO - add verbosity
+    if(bind(listen_fd, (struct sockaddr*)&serv_addr,sizeof(serv_addr)) == -1)
     {
 	perror("bind error");
 	exit(EXIT_FAILURE);
     }
-    
-    printf("========================> ONE\n");
-    if(listen(listenfd, 10) == -1)
+    if(listen(listen_fd, 10) == -1)
     {
         printf("Failed to listen\n");
         return -1;
     }
-    printf("========================> TWO\n");
-
 
     while(1)
     {
-        connfd = accept(listenfd, (struct sockaddr*)NULL ,NULL);
+        conn_fd = accept(listen_fd, (struct sockaddr*)NULL ,NULL);
 
         /* Open the file that we wish to transfer */
         FILE *fp = fopen("sample_file.txt","rb");
@@ -73,7 +74,7 @@ int fsnd_listen()
             if(nread > 0)
             {
                 printf("Sending \n");
-                write(connfd, buff, nread);
+                write(conn_fd, buff, nread);
             }
 
             /*
@@ -92,7 +93,7 @@ int fsnd_listen()
 
         }
 
-        close(connfd);
+        close(conn_fd);
         sleep(1);
     }
 
