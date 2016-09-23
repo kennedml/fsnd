@@ -1,1 +1,1 @@
-int fsnd_listen();
+extern int fsnd_listen();
