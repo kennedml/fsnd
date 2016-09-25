@@ -13,7 +13,7 @@ int fsnd_listen()
     // File Descriptors
     int listen_fd = 0;
     int conn_fd = 0;
-    int n = 1025;
+    int n = 1024;
     struct sockaddr_in serv_addr;
     char *buffer = (char*)calloc(n, sizeof(char*));
 

@@ -9,7 +9,7 @@
 ******************************************************************************/
 
 extern bool verbose;
-extern bool listen;
+extern bool listen_flag;
 extern int port;
 extern int bytes;
 extern int offset;

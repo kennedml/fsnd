@@ -3,7 +3,7 @@
 #include "fsnd_client.h"
 
 bool verbose = false;
-bool listen = false;
+bool listen_flag = false;
 int port = -1;
 int bytes = -1;
 int offset = -1;
