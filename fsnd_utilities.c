@@ -4,7 +4,7 @@
 
 bool verbose = false;
 bool listen_flag = false;
-int port = -1;
+int fsnd_port = -1;
 int bytes = -1;
 int offset = -1;
 

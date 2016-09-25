@@ -10,7 +10,7 @@
 
 extern bool verbose;
 extern bool listen_flag;
-extern int port;
+extern int fsnd_port;
 extern int bytes;
 extern int offset;
 

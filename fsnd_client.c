@@ -1,3 +1,4 @@
+#include "fsnd_client.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -27,7 +28,7 @@ int fsnd_client()
 
     /* Initialize sockaddr_in data structure */
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(5000); // port
+    serv_addr.sin_port = htons(fsnd_port); // port
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     /* Attempt a connection */
