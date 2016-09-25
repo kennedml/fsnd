@@ -43,7 +43,7 @@ int parse_args(int argc, char **argv)
                 verbose = true;
 		break;
             case PORT:
-                port = atoi(optarg);
+                fsnd_port = atoi(optarg);
 		break;
             case BYTES:
                 bytes = atoi(optarg);
