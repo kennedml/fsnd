@@ -1,7 +1,12 @@
+#ifndef FSND_UTILITIES_H
+#define FSND_UTILITIES_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include "fsnd_client.h"
+#include "fsnd_server.h"
 /******************************************************************************
 
 				Global Variables
@@ -32,3 +37,4 @@ typedef enum
 ******************************************************************************/
 int parse_args(int argc, char **argv);
 int print_help();
+#endif
