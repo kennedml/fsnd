@@ -1,6 +1,4 @@
 #include "fsnd_utilities.h"
-#include "fsnd_server.h"
-#include "fsnd_client.h"
 
 bool verbose = false;
 bool listen_flag = false;
