@@ -38,7 +38,7 @@ int parse_args(int argc, char **argv)
     int fsnd_bytes = -1;
     int fsnd_offset = -1;
 
-    while((opt = getopt(argc, argv, "hvpnol")) != -1)
+    while((opt = getopt(argc, argv, "hvp:n:o:l")) != -1)
     {
         switch(opt)
         {
@@ -53,7 +53,7 @@ int parse_args(int argc, char **argv)
                 is_verbose = true;
 		break;
             case PORT:
-                if(fsnd_port != NULL)
+                if(fsnd_port != '\0')
                 {    
                     fsnd_port = atoi(optarg);
                 }
@@ -125,11 +125,11 @@ int fsnd_listen()
 
     while(1)
     {
-        conn_fd = accept(listen_fd, (struct sockaddr*)NULL ,NULL);
+        conn_fd = accept(listen_fd, (struct sockaddr*)'\0' ,'\0');
 
         /* Open the file that we wish to transfer */
         FILE *fp = fopen("sample_file.txt","rb");
-        if(fp==NULL)
+        if(fp=='\0')
         {
             printf("File opern error");
             return 1;   
@@ -205,7 +205,7 @@ int fsnd_client()
     /* Create file where data will be stored */
     FILE *fp;
     fp = fopen("sample_file.txt", "ab"); 
-    if(NULL == fp)
+    if('\0' == fp)
     {
         printf("Error opening file");
         return 1;

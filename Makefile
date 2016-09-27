@@ -1,7 +1,7 @@
 CPP=gcc
 CFLAGS=-g -Wall
 LDFLAGS=
-SOURCES=main.c fsnd_server.c fsnd_client.c fsnd_utilities.c
+SOURCES=fsnd.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=fsnd
 
