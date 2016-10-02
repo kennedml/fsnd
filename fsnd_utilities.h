@@ -7,15 +7,11 @@
 #include <unistd.h>
 #include "fsnd_client.h"
 #include "fsnd_server.h"
-/******************************************************************************
-
-				Global Variables
-
-******************************************************************************/
+#include "socket.h"
 
 extern bool verbose;
 extern bool listen_flag;
-extern int fsnd_port;
+extern char* fsnd_port;
 extern int bytes;
 extern int offset;
 
@@ -29,12 +25,6 @@ typedef enum
     LISTEN='l'
 } flags;
 
-
-/******************************************************************************
-
-				   Functions
-
-******************************************************************************/
 int parse_args(int argc, char **argv);
 int print_help();
 #endif

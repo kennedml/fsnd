@@ -27,9 +27,9 @@ int fsnd_client()
     }
 
     /* Initialize sockaddr_in data structure */
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(fsnd_port); // port
-    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    /* serv_addr.sin_family = AF_INET; */
+    /* serv_addr.sin_port = htons(fsnd_port); // port */
+    /* serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); */
 
     /* Attempt a connection */
     if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)

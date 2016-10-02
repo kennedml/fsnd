@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
+#include "socket.h"
 
 #ifndef FSND_H
 #define FSND_H
