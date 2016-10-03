@@ -18,18 +18,11 @@ int fsnd_client(char* file)
     char *buffer = (char*)calloc(n, sizeof(char*));
 
     sockfd = socket_dial(fsnd_host, fsnd_port);
-    /* Create a socket first */
-    printf("Socket File Descriptor: %d\n", sockfd);
     if (sockfd < 0)
     {
         printf("\n Error : Could not create socket \n");
         return 1;
     }
-
-    /* if (stat(file, &sb) < 0){ */
-    /*   printf("file provided is invalid.\n"); */
-    /*   return 1; */
-    /* } */
 
     FILE *fp;
     printf("FILE: %s\n", file);
@@ -39,20 +32,16 @@ int fsnd_client(char* file)
         printf("Error opening file");
         return 1;
     }
+
     while(!feof(fp))
     {
       int read = fread(buffer, 1, sizeof(buffer), fp);
-      /* if (read < 1){ */
-      /*   printf("Failed to read from file\n"); */
-      /*   fclose(fp); */
-      /*   return 1; */
-      /* } */
-
+      printf("%s\n", buffer);
       do {
-        bytes_sent = send(sockfd, &buffer[offset], read - offset, 0);
+        bytes_sent = send(sockfd, &buffer, read - offset, 0);
         if (bytes_sent < 1){
-          printf("Failed to write to socket: %s\n", strerror(errno));
-          fclose(fp);
+          printf("Didn't write to socket: %s\n", strerror(errno));
+         fclose(fp);
           return 1;
         }
         offset += bytes_sent;
