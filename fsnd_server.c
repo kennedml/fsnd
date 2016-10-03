@@ -25,7 +25,7 @@ int fsnd_listen(char* file)
     conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
 
     int received = 0;
-    while((received = recv(conn_fd, buffer, BUFSIZ, 0)))
+    while((received = recv(conn_fd, buffer, BUFSIZ, 0)) > 0)
     {
       printf("Inside received while\n");
       do

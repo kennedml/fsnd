@@ -64,12 +64,13 @@ int parse_args(int argc, char **argv)
   
   int n_non_flagged_opts = argc - optind;
 
-  // TODO - if server flag
   if(listen_flag)
   {
-    printf("Listening\n");
+    if (n_non_flagged_opts == 1){
+      file_name = argv[optind];
+      rc = fsnd_listen(file_name);
+    }
   }
-  
   else
   {  
     if(n_non_flagged_opts == 0)
@@ -135,6 +136,7 @@ int parse_args(int argc, char **argv)
                 return(EXIT_FAILURE);
             }
         }
+      rc = fsnd_client(file_name);
     }
     else
     {
@@ -147,6 +149,7 @@ int parse_args(int argc, char **argv)
   printf("file name: %s\n", file_name);
   printf("offset: %d\n", offset);
   printf("bytes: %d\n", bytes);
+
   return(0);
 }
 
