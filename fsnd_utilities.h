@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <limits.h>
 #include <errno.h>
 #include "fsnd_client.h"
 #include "fsnd_server.h"

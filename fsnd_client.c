@@ -14,8 +14,7 @@ int fsnd_client(char* file)
 {
     int sockfd = 0;
     int bytes_sent = 0;
-    int n = 1024;
-    char *buffer = (char*)calloc(n, sizeof(char*));
+    char *buffer = (char*)calloc(BUFSIZ, sizeof(char*));
 
     sockfd = socket_dial(fsnd_host, fsnd_port);
     if (sockfd < 0)
@@ -35,16 +34,17 @@ int fsnd_client(char* file)
 
     while(!feof(fp))
     {
-      int read = fread(buffer, 1, sizeof(buffer), fp);
+      int read = fread(buffer, 256, sizeof(buffer), fp);
       printf("%s\n", buffer);
       do {
-        bytes_sent = send(sockfd, &buffer, read - offset, 0);
+        bytes_sent = send(sockfd, &buffer, strlen(buffer), 0);
         if (bytes_sent < 1){
           printf("Didn't write to socket: %s\n", strerror(errno));
-         fclose(fp);
+          fclose(fp);
           return 1;
         }
         offset += bytes_sent;
+        printf("Wrote to socket: %d\n", bytes_sent);
       } while(offset < read);
     }
     fclose(fp);
