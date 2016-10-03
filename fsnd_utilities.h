@@ -10,6 +10,7 @@
 #include "fsnd_client.h"
 #include "fsnd_server.h"
 #include "socket.h"
+#include <ctype.h>
 
 extern bool verbose;
 extern bool listen_flag;
@@ -30,4 +31,5 @@ typedef enum
 
 int parse_args(int argc, char **argv);
 int print_help();
+bool is_valid_file(char *path);
 #endif

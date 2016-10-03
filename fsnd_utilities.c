@@ -1,9 +1,13 @@
 #include "fsnd_utilities.h"
+#include <sys/stat.h>
 
 bool verbose = false;
 bool listen_flag = false;
-char* fsnd_port = "9285";
-char* fsnd_host = "127.0.0.1";
+char* default_port = "9285";
+char* default_host = "127.0.0.1";
+char *fsnd_port;
+char *fsnd_host;
+char *file_name;
 int bytes = 0;
 int offset = 0;
 
@@ -25,6 +29,8 @@ int parse_args(int argc, char **argv)
 {
   int opt;
   int rc = 0;
+  bool has_port_flag = false;
+
 
   while((opt = getopt(argc, argv, "hvp:n:o:l")) != -1)
   {
@@ -42,6 +48,7 @@ int parse_args(int argc, char **argv)
         break;
       case PORT:
         fsnd_port = optarg;
+        has_port_flag = true;
         break;
       case BYTES:
         bytes = atoi(optarg);
@@ -54,13 +61,106 @@ int parse_args(int argc, char **argv)
         break;
     }
   }
-  if (listen_flag)
+  
+  int n_non_flagged_opts = argc - optind;
+
+  // TODO - if server flag
+  if(listen_flag)
   {
-    rc = fsnd_listen(argv[argc-1]);
-  } else { 
-    /* fsnd_host = argv[argc-1]; */
-    /* printf("host: %s file: %s\n", argv[argc-2], argv[argc-1]); */
-    rc = fsnd_client(argv[argc-1]);
+    printf("Listening\n");
   }
+  
+  else
+  {  
+    if(n_non_flagged_opts == 0)
+    {
+        printf("Error: Include file name\n");
+        return(EXIT_FAILURE);
+    }
+    else if(n_non_flagged_opts == 1)
+    {      
+        if(is_valid_file(argv[optind]))
+        {
+            fsnd_host = default_host;
+            fsnd_port = default_port;
+            file_name = argv[optind];
+        }
+        else
+        {
+            printf("invalid file\n");
+            return(EXIT_FAILURE);
+        }
+    }
+    else if(n_non_flagged_opts == 2)
+    {
+        if(has_port_flag)
+        {
+            if(is_valid_file(argv[optind+1]))
+            {
+                fsnd_host = argv[optind];
+                //fsnd_port = default_port;
+                file_name = argv[optind+1];
+            }
+            else
+            {
+                printf("invalid file\n");
+                return(EXIT_FAILURE);
+            }
+        }
+        else
+        {
+            printf("Not enough arguments. Check to be sure you pass port with -p flag\n");
+            return(EXIT_FAILURE);
+        }
+    }
+    else if(n_non_flagged_opts == 3)
+    {
+        if(has_port_flag)
+        {
+            printf("Too many arguments! Try removing the -p flag!\n");
+            return(EXIT_FAILURE);
+        }
+        else
+        {
+            printf("port: %s\n", fsnd_port);
+            if(is_valid_file(argv[optind+2]))
+            {
+                fsnd_host = argv[optind];
+                fsnd_port = argv[optind+1];
+                file_name = argv[optind+2];
+            }
+            else
+            {
+                printf("invalid file\n");
+                return(EXIT_FAILURE);
+            }
+        }
+    }
+    else
+    {
+        printf("Too many arguments entered\n");
+        return(EXIT_FAILURE);
+    }
+  }
+  printf("host: %s\n", fsnd_host);
+  printf("port: %s\n", fsnd_port);
+  printf("file name: %s\n", file_name);
+  printf("offset: %d\n", offset);
+  printf("bytes: %d\n", bytes);
   return(0);
 }
+
+bool is_valid_file(char *path)
+{
+    struct stat sb;
+    stat(path, &sb);
+    if(S_ISREG(sb.st_mode))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
