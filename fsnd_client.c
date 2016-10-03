@@ -10,57 +10,56 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
-int fsnd_client()
+int fsnd_client(char* file)
 {
     int sockfd = 0;
-    int bytesReceived = 0;
+    int bytes_sent = 0;
     int n = 1024;
-    char *recvBuff = (char*)calloc(n, sizeof(char*));
-    memset(&recvBuff, 0, sizeof(recvBuff));
-    struct sockaddr_in serv_addr;
+    char *buffer = (char*)calloc(n, sizeof(char*));
 
+    sockfd = socket_dial(fsnd_host, fsnd_port);
     /* Create a socket first */
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0))< 0)
+    printf("Socket File Descriptor: %d\n", sockfd);
+    if (sockfd < 0)
     {
         printf("\n Error : Could not create socket \n");
         return 1;
     }
 
-    /* Initialize sockaddr_in data structure */
-    /* serv_addr.sin_family = AF_INET; */
-    /* serv_addr.sin_port = htons(fsnd_port); // port */
-    /* serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); */
+    /* if (stat(file, &sb) < 0){ */
+    /*   printf("file provided is invalid.\n"); */
+    /*   return 1; */
+    /* } */
 
-    /* Attempt a connection */
-    if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
-    {
-        printf("\n Error : Connect Failed \n");
-        return 1;
-    }
-
-    /* Create file where data will be stored */
     FILE *fp;
-    fp = fopen("sample_file.txt", "ab"); 
-    if(NULL == fp)
+    printf("FILE: %s\n", file);
+    fp = fopen(file, "rb");
+    if(!fp)
     {
         printf("Error opening file");
         return 1;
     }
-
-    /* Receive data in chunks of 256 bytes */
-    while((bytesReceived = read(sockfd, recvBuff, 256)) > 0)
+    while(!feof(fp))
     {
-        printf("Bytes received %d\n",bytesReceived);    
-        // recvBuff[n] = 0;
-        fwrite(recvBuff, 1,bytesReceived,fp);
-        // printf("%s \n", recvBuff);
-    }
+      int read = fread(buffer, 1, sizeof(buffer), fp);
+      /* if (read < 1){ */
+      /*   printf("Failed to read from file\n"); */
+      /*   fclose(fp); */
+      /*   return 1; */
+      /* } */
 
-    if(bytesReceived < 0)
-    {
-        printf("\n Read Error \n");
+      do {
+        bytes_sent = send(sockfd, &buffer[offset], read - offset, 0);
+        if (bytes_sent < 1){
+          printf("Failed to write to socket: %s\n", strerror(errno));
+          fclose(fp);
+          return 1;
+        }
+        offset += bytes_sent;
+      } while(offset < read);
     }
+    fclose(fp);
 
-    free(recvBuff);
+    free(buffer);
     return 0;
 }

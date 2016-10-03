@@ -3,8 +3,9 @@
 bool verbose = false;
 bool listen_flag = false;
 char* fsnd_port = "9285";
-int bytes = -1;
-int offset = -1;
+char* fsnd_host = "127.0.0.1";
+int bytes = 0;
+int offset = 0;
 
 int print_help()
 {
@@ -55,10 +56,11 @@ int parse_args(int argc, char **argv)
   }
   if (listen_flag)
   {
-    rc = fsnd_listen();
+    rc = fsnd_listen(argv[argc-1]);
   } else { 
-    printf("Would be initiating client here\n");
-    /* fsnd_client(); */
+    /* fsnd_host = argv[argc-1]; */
+    /* printf("host: %s file: %s\n", argv[argc-2], argv[argc-1]); */
+    rc = fsnd_client(argv[argc-1]);
   }
   return(0);
 }

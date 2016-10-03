@@ -1,4 +1,5 @@
-/* socket.h: simple socket library */
+/* socket.h: simple socket library
+ * Written by Jeremy Winterberg for CS252 */
 
 #ifndef __SOCKET_H__
 #define __SOCKET_H__

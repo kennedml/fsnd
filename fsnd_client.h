@@ -2,6 +2,6 @@
 #define FSND_CLIENT_H
 #include "fsnd_utilities.h"
 
-int fsnd_client();
+int fsnd_client(char* file);
 
 #endif

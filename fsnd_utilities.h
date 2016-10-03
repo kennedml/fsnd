@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <errno.h>
 #include "fsnd_client.h"
 #include "fsnd_server.h"
 #include "socket.h"
@@ -12,6 +14,7 @@
 extern bool verbose;
 extern bool listen_flag;
 extern char* fsnd_port;
+extern char* fsnd_host;
 extern int bytes;
 extern int offset;
 
