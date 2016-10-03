@@ -4,7 +4,7 @@
 bool verbose = false;
 bool listen_flag = false;
 char* default_port = "9285";
-char* default_host = "127.0.0.1";
+char* default_host = "localhost";
 char *fsnd_port;
 char *fsnd_host;
 char *file_name;
@@ -68,6 +68,9 @@ int parse_args(int argc, char **argv)
   {
     if (n_non_flagged_opts == 1){
       file_name = argv[optind];
+      fsnd_port = default_port;
+      fsnd_host = default_host;
+      printf("FILE: %s\n", file_name);
       rc = fsnd_listen(file_name);
     }
   }
@@ -136,13 +139,13 @@ int parse_args(int argc, char **argv)
                 return(EXIT_FAILURE);
             }
         }
-      rc = fsnd_client(file_name);
     }
     else
     {
         printf("Too many arguments entered\n");
         return(EXIT_FAILURE);
     }
+    rc = fsnd_client(file_name);
   }
   printf("host: %s\n", fsnd_host);
   printf("port: %s\n", fsnd_port);

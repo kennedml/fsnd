@@ -34,10 +34,14 @@ int fsnd_client(char* file)
 
     while(!feof(fp))
     {
+      printf("before read\n");
       int read = fread(buffer, 256, sizeof(buffer), fp);
+      printf("after read\n");
       printf("%s\n", buffer);
       do {
+        printf("before send\n");
         bytes_sent = send(sockfd, &buffer, strlen(buffer), 0);
+        printf("after send\n");
         if (bytes_sent < 1){
           printf("Didn't write to socket: %s\n", strerror(errno));
           fclose(fp);
