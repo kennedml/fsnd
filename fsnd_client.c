@@ -47,10 +47,12 @@ int fsnd_client(char* file, bool is_verbose)
 
       if(verbose){ printf("File size: %ld\n", bufsize);}
 
-      if (bytes > 0L)
+      if (bytes > 0L){
         sprintf(file_size, "%ld", bytes);
-      else
+      }
+      else{
         sprintf(file_size, "%d", (int)sb.st_size);
+      }
 
       send(sockfd, file_size, sizeof(file_size), 0);
 

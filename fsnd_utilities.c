@@ -61,7 +61,7 @@ int parse_args(int argc, char **argv)
         break;
     }
   }
-  
+
   int n_non_flagged_opts = argc - optind;
 
   if(listen_flag)
@@ -70,85 +70,100 @@ int parse_args(int argc, char **argv)
       file_name = argv[optind];
       fsnd_port = default_port;
       fsnd_host = default_host;
-      rc = fsnd_listen(file_name, verbose);
+    } else {
+      file_name = NULL;
+      fsnd_port = default_port;
+      fsnd_host = default_host;
     }
+    rc = fsnd_listen(file_name, verbose);
   }
   else
   {  
     if(n_non_flagged_opts == 0)
     {
-        printf("Error: Include file name\n");
-        return(EXIT_FAILURE);
+      /* This is for STDIN piping, didn't quite finish */
+      /* Will finish later this week */
+
+      /* char stdin_buffer[BUFSIZ]; */
+      /* int n; */
+      /* scanf("%d", n); */
+      /* printf("n: %d\n", n); */
+
+      /* int count = fread(stdin_buffer, BUFSIZ, 1, stdin); */
+      /* printf("str: %s\n", stdin_buffer); */
+      /* printf("read %d bytes\n", count); */
+      printf("Error: Include file name\n");
+      return(EXIT_FAILURE);
     }
     else if(n_non_flagged_opts == 1)
     {      
-        if(is_valid_file(argv[optind]))
-        {
-            fsnd_host = default_host;
-            fsnd_port = default_port;
-            file_name = argv[optind];
-        }
-        else
-        {
-            printf("invalid file\n");
-            return(EXIT_FAILURE);
-        }
+      if(is_valid_file(argv[optind]))
+      {
+        fsnd_host = default_host;
+        fsnd_port = default_port;
+        file_name = argv[optind];
+      }
+      else
+      {
+        printf("invalid file\n");
+        return(EXIT_FAILURE);
+      }
     }
     else if(n_non_flagged_opts == 2)
     {
-        if(has_port_flag)
+      if(has_port_flag)
+      {
+        if(is_valid_file(argv[optind+1]))
         {
-            if(is_valid_file(argv[optind+1]))
-            {
-                fsnd_host = argv[optind];
-                //fsnd_port = default_port;
-                file_name = argv[optind+1];
-            }
-            else
-            {
-                printf("invalid file\n");
-                return(EXIT_FAILURE);
-            }
+          fsnd_host = argv[optind];
+          //fsnd_port = default_port;
+          file_name = argv[optind+1];
         }
         else
         {
-            printf("Not enough arguments. Check to be sure you pass port with -p flag\n");
-            return(EXIT_FAILURE);
+          printf("invalid file\n");
+          return(EXIT_FAILURE);
         }
+      }
+      else
+      {
+        printf("Not enough arguments. Check to be sure you pass port with -p flag\n");
+        return(EXIT_FAILURE);
+      }
     }
     else if(n_non_flagged_opts == 3)
     {
-        if(has_port_flag)
+      if(has_port_flag)
+      {
+        printf("Too many arguments! Try removing the -p flag!\n");
+        return(EXIT_FAILURE);
+      }
+      else
+      {
+        printf("port: %s\n", fsnd_port);
+        if(is_valid_file(argv[optind+2]))
         {
-            printf("Too many arguments! Try removing the -p flag!\n");
-            return(EXIT_FAILURE);
+          fsnd_host = argv[optind];
+          fsnd_port = argv[optind+1];
+          file_name = argv[optind+2];
         }
         else
         {
-            printf("port: %s\n", fsnd_port);
-            if(is_valid_file(argv[optind+2]))
-            {
-                fsnd_host = argv[optind];
-                fsnd_port = argv[optind+1];
-                file_name = argv[optind+2];
-            }
-            else
-            {
-                printf("invalid file\n");
-                return(EXIT_FAILURE);
-            }
+          printf("invalid file\n");
+          return(EXIT_FAILURE);
         }
+      }
     }
     else
     {
-        printf("Too many arguments entered\n");
-        return(EXIT_FAILURE);
+      printf("Too many arguments entered\n");
+      return(EXIT_FAILURE);
     }
     if(verbose)
     {
-        printf("Connecting to IP: %s\n", fsnd_host);
-        printf("On port: %s\n", fsnd_port);
-        printf("File name: %s\n", file_name);
+      printf("Connecting to IP: %s\n", fsnd_host);
+      printf("On port: %s\n", fsnd_port);
+      printf("File name: %s\n", file_name);
     }
     rc = fsnd_client(file_name, verbose);
   }
@@ -164,15 +179,15 @@ int parse_args(int argc, char **argv)
 
 bool is_valid_file(char *path)
 {
-    struct stat sb;
-    stat(path, &sb);
-    if(S_ISREG(sb.st_mode))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+  struct stat sb;
+  stat(path, &sb);
+  if(S_ISREG(sb.st_mode))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
