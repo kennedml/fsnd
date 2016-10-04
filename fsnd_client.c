@@ -13,7 +13,6 @@
 int fsnd_client(char* file, bool is_verbose)
 {
   int sockfd = 0;
-  int bytes_sent = 0;
   char *source;
 
   sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);
@@ -48,14 +47,11 @@ int fsnd_client(char* file, bool is_verbose)
 
       if(verbose){ printf("File size: %ld\n", bufsize);}
 
-      send(sockfd, file_size, sizeof(file_size), 0);
-
-      if (bytes != 0L){
+      if (bytes > 0L)
         sprintf(file_size, "%ld", bytes);
-      } else{
+      else
         sprintf(file_size, "%d", (int)sb.st_size);
-      }
-      printf("BUFSIZ: %ld\n", bufsize); 
+
       send(sockfd, file_size, sizeof(file_size), 0);
 
       /* Allocate our buffer to that size. */
