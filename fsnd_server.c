@@ -31,10 +31,10 @@ int fsnd_listen(char* file)
 
   remaining = file_size;
 
-  while(((received = read(conn_fd, buffer, BUFSIZ)) > 0) && (remaining > 0))
+  while(((received = read(conn_fd, buffer, file_size)) > 0) && (remaining > 0))
   {
-    printf("BUFFER: %s\n", buffer);
-    fwrite(buffer, sizeof(buffer), 1, fp);
+    printf("REC: %d\tREM: %d\t BUF: %zu\n", received, remaining, sizeof(buffer));
+    fwrite(buffer, 1, received, fp);
     remaining -= received;
   }
 
