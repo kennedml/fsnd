@@ -46,7 +46,7 @@ int fsnd_client(char* file)
             fstat(fileno(fp), &sb);
 
             sprintf(file_size, "%d", (int)sb.st_size);
-            /* printf("BUFSIZ: %s\n", file_size); */
+            printf("BUFSIZ: %s\n", file_size); 
             send(sockfd, file_size, sizeof(file_size), 0);
 
             /* Allocate our buffer to that size. */
@@ -56,17 +56,28 @@ int fsnd_client(char* file)
             if (fseek(fp, 0L, SEEK_SET) != 0) { /* Error */ }
 
             /* Read the entire file into memory. */
-            size_t newLen = fread(source, sizeof(char), bufsize, fp);
-            if ( ferror( fp ) != 0 ) {
+            size_t newLen;
+            int sum = 0;
+            //size_t newLen = fread(source, sizeof(char), bufsize, fp);
+            while((newLen = fread(source, sizeof(char), sizeof(file_size),fp)) > 0)
+            {
+                sum += newLen;
+                printf("newLen: %zu\ttotal len: %d\n", newLen, sum);
+                if ( ferror( fp ) != 0 ) {
                 fputs("Error reading file", stderr);
-            } else {
-                source[newLen++] = '\0'; /* Just to be safe. */
+                } else {
+                    source[newLen++] = '\0'; /* Just to be safe. */
+                }
+                //write(sockfd, source, atoi(file_size) + 1);
+                send(sockfd, source, newLen, 0); 
             }
         }
+
+
     fclose(fp);
     }
     
-    printf("%s\n", source);
-    write(sockfd, source, atoi(file_size)+1);
+    //printf("%s\n", source);
+    //write(sockfd, source, atoi(file_size)+1);
     return 0;
 }
