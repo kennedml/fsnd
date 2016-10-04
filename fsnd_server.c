@@ -43,10 +43,10 @@ int fsnd_listen(char* file, bool is_verbose)
   {
     sum += received;
     progress = (double)sum / (double)file_size;
-    //printf(stdout, "progress= %f", progress);
+
     printf("\rprogress= %f", progress);
     fflush(stdout);
-    //printf("REC: %d\tREM: %d\t BUF: %zu\n", received, remaining, sizeof(buffer));
+
     fwrite(buffer, 1, received, fp);
     remaining -= received;
   }
@@ -56,10 +56,9 @@ int fsnd_listen(char* file, bool is_verbose)
     printf("File size received: %d\n", sum);
   } 
   fclose(fp);
+  free(buffer);
   close(conn_fd);
-
   close(listen_fd);
 
-  free(buffer);
   return 0;
 }
