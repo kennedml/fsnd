@@ -1,3 +1,5 @@
+#FSND Mathew Kennedy <kennedyl@uwec.edu> & Jeremy Winterberg <winterjd@uwec.edu>
+
 How to compile
     - run the 'make' command
 
