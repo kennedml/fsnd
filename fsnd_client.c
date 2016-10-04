@@ -10,13 +10,13 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
-int fsnd_client(char* file)
+int fsnd_client(char* file, bool is_verbose)
 {
     int sockfd = 0;
     int bytes_sent = 0;
     char *source;
 
-    sockfd = socket_dial(fsnd_host, fsnd_port);
+    sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);
     if (sockfd < 0)
     {
         printf("\n Error : Could not create socket \n");
@@ -24,7 +24,6 @@ int fsnd_client(char* file)
     }
 
     FILE *fp;
-    printf("FILE: %s\n", file);
     fp = fopen(file, "rb");
     if(!fp)
     {
@@ -46,7 +45,9 @@ int fsnd_client(char* file)
             fstat(fileno(fp), &sb);
 
             sprintf(file_size, "%d", (int)sb.st_size);
-            printf("BUFSIZ: %ld\n", bufsize); 
+
+            if(verbose){ printf("File size: %d\n", bufsize);}
+
             send(sockfd, file_size, sizeof(file_size), 0);
 
             /* Allocate our buffer to that size. */
@@ -62,7 +63,7 @@ int fsnd_client(char* file)
             while((newLen = fread(source, sizeof(char), sizeof(bufsize),fp)) > 0)
             {
                 sum += newLen;
-                printf("newLen: %zu\ttotal len: %d\n", newLen, sum);
+                //printf("newLen: %zu\ttotal len: %d\n", newLen, sum);
                 /* if ( ferror( fp ) != 0 ) { */
                 /* fputs("Error reading file", stderr); */
                 /* } else { */
@@ -70,15 +71,12 @@ int fsnd_client(char* file)
                 /* } */
                 write(sockfd, source, newLen);
             }
-            printf("BUFSIZ: %ld\n", bufsize); 
-            printf("sizeof(bufsiz) %zu\n", sizeof(bufsize));
-            /* write(sockfd, source, bufsize-sum); */ 
         }
 
 
     fclose(fp);
     }
-    
+    if(verbose){printf("Send Success!\n");} 
     //printf("%s\n", source);
     //write(sockfd, source, atoi(file_size)+1);
     return 0;

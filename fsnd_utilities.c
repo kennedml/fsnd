@@ -70,8 +70,7 @@ int parse_args(int argc, char **argv)
       file_name = argv[optind];
       fsnd_port = default_port;
       fsnd_host = default_host;
-      printf("FILE: %s\n", file_name);
-      rc = fsnd_listen(file_name);
+      rc = fsnd_listen(file_name, verbose);
     }
   }
   else
@@ -145,13 +144,20 @@ int parse_args(int argc, char **argv)
         printf("Too many arguments entered\n");
         return(EXIT_FAILURE);
     }
-    rc = fsnd_client(file_name);
+    if(verbose)
+    {
+        printf("Connecting to IP: %s\n", fsnd_host);
+        printf("On port: %s\n", fsnd_port);
+        printf("File name: %s\n", file_name);
+    }
+    rc = fsnd_client(file_name, verbose);
   }
-  printf("host: %s\n", fsnd_host);
-  printf("port: %s\n", fsnd_port);
-  printf("file name: %s\n", file_name);
-  printf("offset: %d\n", offset);
-  printf("bytes: %d\n", bytes);
+
+  //printf("host: %s\n", fsnd_host);
+  //printf("port: %s\n", fsnd_port);
+  //printf("file name: %s\n", file_name);
+  //printf("offset: %d\n", offset);
+  //printf("bytes: %d\n", bytes);
 
   return(0);
 }
