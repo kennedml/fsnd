@@ -16,31 +16,30 @@ int fsnd_listen(char* file)
 
 
   FILE *fp;
-  fp = fopen(file, "wb");
+  fp = fopen(file, "w");
 
   printf("file: %s\n", file);
 
-  while(1)
+  addr_size = sizeof(addr);
+  conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
+
+  int remaining = 0;
+  int received = 0;
+  recv(conn_fd, buffer, BUFSIZ, 0);
+  int file_size = atoi(buffer);
+  printf("FILE SIZE: %d\n", file_size);
+
+  remaining = file_size;
+
+  while(((received = read(conn_fd, buffer, BUFSIZ)) > 0) && (remaining > 0))
   {
-    addr_size = sizeof(addr);
-    conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
-
-    int received = 0;
-    while((received = recv(conn_fd, buffer, BUFSIZ, 0)) > 0)
-    {
-      printf("Inside received while\n");
-      do
-      {
-
-        printf("BUFFER: %s\n", buffer);
-        offset += received;
-      } while (offset < received);
-      received = read(conn_fd, buffer, BUFSIZ);
-    }
-    fprintf(fp, "%s", buffer);
-    fclose(fp);
-    close(conn_fd);
+    printf("BUFFER: %s\n", buffer);
+    fwrite(buffer, sizeof(buffer), 1, fp);
+    remaining -= received;
   }
+
+  fclose(fp);
+  close(conn_fd);
 
   close(listen_fd);
 

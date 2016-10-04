@@ -31,6 +31,8 @@ int fsnd_client(char* file)
         printf("Error opening file");
         return 1;
     }
+
+    struct stat sb;
     
     if (fp != NULL) {
         /* Go to the end of the file. */
@@ -38,6 +40,14 @@ int fsnd_client(char* file)
             /* Get the size of the file. */
             long bufsize = ftell(fp);
             if (bufsize == -1) { /* Error */ }
+
+            // Get and Send File Size
+            fstat(fileno(fp), &sb);
+            char file_size[256];
+
+            sprintf(file_size, "%d", (int)sb.st_size);
+            /* printf("BUFSIZ: %s\n", file_size); */
+            send(sockfd, file_size, sizeof(file_size), 0);
 
             /* Allocate our buffer to that size. */
             source = malloc(sizeof(char) * (bufsize + 1));
