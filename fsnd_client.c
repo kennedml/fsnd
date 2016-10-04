@@ -33,6 +33,7 @@ int fsnd_client(char* file)
     }
 
     struct stat sb;
+    char file_size[256];
     
     if (fp != NULL) {
         /* Go to the end of the file. */
@@ -43,7 +44,6 @@ int fsnd_client(char* file)
 
             // Get and Send File Size
             fstat(fileno(fp), &sb);
-            char file_size[256];
 
             sprintf(file_size, "%d", (int)sb.st_size);
             /* printf("BUFSIZ: %s\n", file_size); */
@@ -67,6 +67,6 @@ int fsnd_client(char* file)
     }
     
     printf("%s\n", source);
-    write(sockfd, source, strlen(source)+1);
+    write(sockfd, source, atoi(file_size)+1);
     return 0;
 }
