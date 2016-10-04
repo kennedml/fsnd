@@ -8,8 +8,8 @@ char* default_host = "localhost";
 char *fsnd_port;
 char *fsnd_host;
 char *file_name;
-int bytes = 0;
-int offset = 0;
+long bytes = 0L;
+long offset = 0L;
 
 int print_help()
 {
