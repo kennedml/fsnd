@@ -2,6 +2,7 @@
 
 int fsnd_listen(char* file)
 {
+
   // File Descriptors
   int listen_fd = 0;
   int conn_fd = 0;
@@ -30,25 +31,18 @@ int fsnd_listen(char* file)
       printf("Inside received while\n");
       do
       {
-        /* int read = fwrite(&buffer[offset], 256, read - offset, fp); */
 
         printf("BUFFER: %s\n", buffer);
-        /* if (read < 1){ */
-        /*   printf("Failure to write to file: %s\n", strerror(errno)); */
-        /*   fclose(fp); */
-        /*   return 1; */
-        /* } */
-
         offset += received;
       } while (offset < received);
       received = read(conn_fd, buffer, BUFSIZ);
     }
-
+    fprintf(fp, "%s", buffer);
+    fclose(fp);
     close(conn_fd);
   }
 
   close(listen_fd);
-  fclose(fp);
 
   free(buffer);
   return 0;

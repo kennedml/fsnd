@@ -14,7 +14,7 @@ int fsnd_client(char* file)
 {
     int sockfd = 0;
     int bytes_sent = 0;
-    char *buffer = (char*)calloc(BUFSIZ, sizeof(char*));
+    char *source;
 
     sockfd = socket_dial(fsnd_host, fsnd_port);
     if (sockfd < 0)
@@ -31,28 +31,32 @@ int fsnd_client(char* file)
         printf("Error opening file");
         return 1;
     }
+    
+    if (fp != NULL) {
+        /* Go to the end of the file. */
+        if (fseek(fp, 0L, SEEK_END) == 0) {
+            /* Get the size of the file. */
+            long bufsize = ftell(fp);
+            if (bufsize == -1) { /* Error */ }
 
-    while(!feof(fp))
-    {
-      printf("before read\n");
-      int read = fread(buffer, 256, sizeof(buffer), fp);
-      printf("after read\n");
-      printf("%s\n", buffer);
-      do {
-        printf("before send\n");
-        bytes_sent = send(sockfd, &buffer, strlen(buffer), 0);
-        printf("after send\n");
-        if (bytes_sent < 1){
-          printf("Didn't write to socket: %s\n", strerror(errno));
-          fclose(fp);
-          return 1;
+            /* Allocate our buffer to that size. */
+            source = malloc(sizeof(char) * (bufsize + 1));
+
+            /* Go back to the start of the file. */
+            if (fseek(fp, 0L, SEEK_SET) != 0) { /* Error */ }
+
+            /* Read the entire file into memory. */
+            size_t newLen = fread(source, sizeof(char), bufsize, fp);
+            if ( ferror( fp ) != 0 ) {
+                fputs("Error reading file", stderr);
+            } else {
+                source[newLen++] = '\0'; /* Just to be safe. */
+            }
         }
-        offset += bytes_sent;
-        printf("Wrote to socket: %d\n", bytes_sent);
-      } while(offset < read);
-    }
     fclose(fp);
-
-    free(buffer);
+    }
+    
+    printf("%s\n", source);
+    write(sockfd, source, strlen(source)+1);
     return 0;
 }
