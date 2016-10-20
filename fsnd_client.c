@@ -31,7 +31,7 @@ int fsnd_client(char* file, bool is_verbose)
   }
 
   struct stat sb;
-  char file_size[512];
+  char file_size[1024];
 
   if (fp != NULL) {
     /* Go to the end of the file. */
@@ -54,7 +54,7 @@ int fsnd_client(char* file, bool is_verbose)
         sprintf(file_size, "%d", (int)sb.st_size);
       }
 
-      send(sockfd, file_size, sizeof(file_size), 0);
+      write(sockfd, file_size, sizeof(file_size));
 
       /* Allocate our buffer to that size. */
       source = malloc(sizeof(char) * (bufsize + 1));
@@ -71,12 +71,11 @@ int fsnd_client(char* file, bool is_verbose)
         sum += newLen;
         write(sockfd, source, newLen);
       }
+
     }
-
-    free(source);
-
-    fclose(fp);
   }
+  free(source);
+  fclose(fp);
   if(verbose){printf("Send Success!\n");} 
   close(sockfd);
   return 0;
