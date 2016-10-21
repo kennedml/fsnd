@@ -23,7 +23,7 @@ int socket_dial(const char *host, const char *port, bool is_verbose) {
     return -1;
   }
   if(connect(s, hostinfo->ai_addr, hostinfo->ai_addrlen) < 0){
-    printf("nope its breaking here\n");
+    printf("nope its breaking here, %s\n", strerror(errno));
     return -1;
   }
 
