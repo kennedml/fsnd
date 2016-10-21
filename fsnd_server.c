@@ -43,9 +43,8 @@ int fsnd_listen(char* file, bool is_verbose)
   read(conn_fd, BUF, sizeof(char*));
   unsigned long long int file_size = atoll(BUF);
 
-  if(verbose){
-    printf("Receiving file: %s - Filesize: %llu\n", file, file_size);
-  } 
+  if(verbose){printf("Receiving file: %s - Filesize: %llu\n", file, file_size);} 
+
   while(1){
     double progress = 0;
     while((received = read(conn_fd, buffer, 4096)) > 0)
@@ -54,14 +53,14 @@ int fsnd_listen(char* file, bool is_verbose)
       progress = (double)sum / (double)file_size;
 
       int total = 0;
-      do{
+      while(total < received){
         int written = write(fd, buffer, received);
         if (written == -1){
           printf("Failed to write: %s\n", strerror(errno));
           return 1;
         }
         total += written;
-      }while(total < received);
+      }
 
       if (file != NULL){
         fprintf(stdout, "\rprogress= %f | bytes received: %d", progress, sum);
@@ -86,7 +85,6 @@ int fsnd_listen(char* file, bool is_verbose)
   close(fd);
   close(conn_fd);
   close(listen_fd);
-
 
   return 0;
 }

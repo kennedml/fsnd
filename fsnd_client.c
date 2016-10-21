@@ -23,6 +23,7 @@ int fsnd_client(char* file, bool is_verbose)
   struct stat sb;
   char file_size[1024] = "";
 
+  int sum = 0;
   if (fp != NULL) {
     /* Go to the end of the file. */
     if (fseek(fp, offset, SEEK_END) == 0) {
@@ -33,11 +34,9 @@ int fsnd_client(char* file, bool is_verbose)
       // Get and Send File Size
       fstat(fileno(fp), &sb);
 
-      sprintf(file_size, "%d", (int)sb.st_size);
-
       if(verbose){ printf("File size: %ld\n", bufsize);}
 
-      if (bytes > 0L){
+      if (bytes > 0){
         sprintf(file_size, "%ld", bytes);
       }
       else{
@@ -55,7 +54,6 @@ int fsnd_client(char* file, bool is_verbose)
 
       /* Read the entire file into memory. */
       int newLen;
-      //size_t newLen = fread(source, sizeof(char), bufsize, fp);
       while((newLen = fread(source, sizeof(char), strlen(file_size),fp)) > 0)
       {
         int total = 0;
@@ -66,6 +64,7 @@ int fsnd_client(char* file, bool is_verbose)
             return 1;
           }
           total += written;
+          sum += total;
         }while(total < newLen);
       }
 
@@ -73,7 +72,7 @@ int fsnd_client(char* file, bool is_verbose)
   }
   free(source);
   fclose(fp);
-  if(verbose){printf("Send Success!\n");} 
   close(sockfd);
+  if(verbose){printf("Sent %d Bytes Successfully!\n", sum);} 
   return 0;
 }
