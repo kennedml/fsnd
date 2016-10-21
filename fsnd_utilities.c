@@ -189,6 +189,10 @@ bool is_valid_file(char *path)
   {
     return true;
   }
+  else if (listen_flag)
+  {
+    return true;
+  }
   else
   {
     return false;
