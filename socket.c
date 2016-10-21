@@ -23,7 +23,9 @@ int socket_dial(const char *host, const char *port, bool is_verbose) {
     return -1;
   }
   if(connect(s, hostinfo->ai_addr, hostinfo->ai_addrlen) < 0){
-    printf("nope its breaking here, %s\n", strerror(errno));
+    struct sockaddr_in* temp = (struct sockaddr_in*)hostinfo->ai_addr;
+    printf("ip address : %s\n", inet_ntoa(temp->sin_addr));
+    printf("nope its breaking here\n");
     return -1;
   }
 
