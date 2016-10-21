@@ -64,21 +64,22 @@ int parse_args(int argc, char **argv)
 
   int n_non_flagged_opts = argc - optind;
 
-  if(listen_flag)
-  {
-    if (n_non_flagged_opts == 1){
-      file_name = argv[optind];
-    } else {
-      file_name = NULL;
-    }
-    if (fsnd_port == NULL)
-      fsnd_port = default_port;
-    if (fsnd_host == NULL)
-      fsnd_host = default_host;
-    rc = fsnd_listen(file_name, verbose);
-  }
-  else
-  {  
+  /* if(listen_flag) */
+  /* { */
+  /*   if (n_non_flagged_opts == 1){ */
+  /*     file_name = argv[optind]; */
+  /*   } else { */
+  /*     file_name = NULL; */
+  /*   } */
+  /*   if (fsnd_port == NULL) */
+  /*     fsnd_port = default_port; */
+  /*   if (fsnd_host == NULL) */
+  /*     fsnd_host = default_host; */
+  /*   printf("FILE, PARSE ARGS: %s\n", file_name); */
+  /*   rc = fsnd_listen(file_name, verbose); */
+  /* } */
+  /* else */
+  /* { */  
     if(n_non_flagged_opts == 0)
     {
       /* This is for STDIN piping, didn't quite finish */
@@ -165,8 +166,11 @@ int parse_args(int argc, char **argv)
       printf("On port: %s\n", fsnd_port);
       printf("File name: %s\n", file_name);
     }
-    rc = fsnd_client(file_name, verbose);
-  }
+    if (listen_flag)
+      rc = fsnd_listen(file_name, verbose);
+    else
+      rc = fsnd_client(file_name, verbose);
+  /*elseclosing } */
 
   //printf("host: %s\n", fsnd_host);
   //printf("port: %s\n", fsnd_port);
