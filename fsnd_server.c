@@ -25,7 +25,7 @@ int fsnd_listen(char* file, bool is_verbose)
   /* FILE *fp; */
   int fd;
   if (file != NULL){
-    fd = open(file, O_CREAT|O_WRONLY);
+    fd = open(file, O_CREAT|O_WRONLY, 0777);
     /* fp = fopen(file, "w"); */
   } else {
     fd = 1;
@@ -38,12 +38,13 @@ int fsnd_listen(char* file, bool is_verbose)
 
   int sum = 0;
   int received = 0;
+
   char BUF[BUFSIZ];
   read(conn_fd, BUF, sizeof(char*));
   int file_size = atoi(BUF);
-  printf("File_size: %d\n", file_size);
+
   if(verbose){
-    printf("Receiving file: %s\n", file);
+    printf("Receiving file: %s - Filesize: %d\n", file, file_size);
   } 
   while(1){
     double progress = 0;
@@ -52,7 +53,7 @@ int fsnd_listen(char* file, bool is_verbose)
       sum += received;
       progress = (double)sum / (double)file_size;
 
-      int written = write(fd, buffer, received);
+      write(fd, buffer, received);
 
       fprintf(stdout, "\rprogress= %f -- sum: %d -- received: %d", progress, sum, received);
       fflush(stdout);

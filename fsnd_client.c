@@ -31,7 +31,7 @@ int fsnd_client(char* file, bool is_verbose)
   }
 
   struct stat sb;
-  char file_size[1024];
+  char file_size[1024] = "";
 
   if (fp != NULL) {
     /* Go to the end of the file. */
@@ -54,21 +54,20 @@ int fsnd_client(char* file, bool is_verbose)
         sprintf(file_size, "%d", (int)sb.st_size);
       }
 
-      write(sockfd, file_size, sizeof(file_size));
+      // send file size to server
+      write(sockfd, file_size, strlen(file_size));
 
       /* Allocate our buffer to that size. */
-      source = malloc(sizeof(char) * (bufsize + 1));
+      source = malloc(sizeof(char) * (bufsize));
 
       /* Go back to the start of the file. */
       if (fseek(fp, offset, SEEK_SET) != 0) { /* Error */ }
 
       /* Read the entire file into memory. */
       size_t newLen;
-      int sum = 0;
       //size_t newLen = fread(source, sizeof(char), bufsize, fp);
-      while((newLen = fread(source, sizeof(char), sizeof(bufsize),fp)) > 0)
+      while((newLen = fread(source, sizeof(char), strlen(file_size),fp)) > 0)
       {
-        sum += newLen;
         write(sockfd, source, newLen);
       }
 
