@@ -39,12 +39,12 @@ int fsnd_listen(char* file, bool is_verbose)
   int sum = 0;
   int received = 0;
 
-  char BUF[BUFSIZ];
+  char BUF[BUFSIZ] = "";
   read(conn_fd, BUF, sizeof(char*));
-  int file_size = atoi(BUF);
+  unsigned long long int file_size = atoll(BUF);
 
   if(verbose){
-    printf("Receiving file: %s - Filesize: %d\n", file, file_size);
+    printf("Receiving file: %s - Filesize: %llu\n", file, file_size);
   } 
   while(1){
     double progress = 0;
@@ -53,26 +53,35 @@ int fsnd_listen(char* file, bool is_verbose)
       sum += received;
       progress = (double)sum / (double)file_size;
 
-      write(fd, buffer, received);
+      int total = 0;
+      do{
+        int written = write(fd, buffer, received);
+        if (written == -1){
+          printf("Failed to write: %s\n", strerror(errno));
+          return 1;
+        }
+        total += written;
+      }while(total < received);
 
-      fprintf(stdout, "\rprogress= %f -- sum: %d -- received: %d", progress, sum, received);
-      fflush(stdout);
+      if (file != NULL){
+        fprintf(stdout, "\rprogress= %f | bytes received: %d", progress, sum);
+        fflush(stdout);
+      }
     }
 
     if (received == 0){
+      printf("\n");
       break;
     }
     if (received < 0){
       printf("Error Receiving Data: %s\n", strerror(errno));
       return 1;
     }
-
-
-    if (verbose){
-      printf("Receive: success\n");
-      printf("File size received: %d\n", sum);
-    } 
   }
+  if (verbose){
+    printf("Receive: success\n");
+    printf("File size received: %d\n", sum);
+  } 
   free(buffer);
   close(fd);
   close(conn_fd);

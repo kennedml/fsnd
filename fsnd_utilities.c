@@ -64,20 +64,18 @@ int parse_args(int argc, char **argv)
 
   int n_non_flagged_opts = argc - optind;
 
-  /* if(listen_flag) */
-  /* { */
-  /*   if (n_non_flagged_opts == 1){ */
-  /*     file_name = argv[optind]; */
-  /*   } else { */
-  /*     file_name = NULL; */
-  /*   } */
-  /*   if (fsnd_port == NULL) */
-  /*     fsnd_port = default_port; */
-  /*   if (fsnd_host == NULL) */
-  /*     fsnd_host = default_host; */
-  /*   printf("FILE, PARSE ARGS: %s\n", file_name); */
-  /*   rc = fsnd_listen(file_name, verbose); */
-  /* } */
+  if(listen_flag)
+  {
+    if (n_non_flagged_opts == 1){
+      file_name = argv[optind];
+    } else {
+      file_name = NULL;
+    }
+    if (fsnd_port == NULL)
+      fsnd_port = default_port;
+    if (fsnd_host == NULL)
+      fsnd_host = default_host;
+  }
   /* else */
   /* { */  
     if(n_non_flagged_opts == 0)
@@ -93,8 +91,10 @@ int parse_args(int argc, char **argv)
       /* int count = fread(stdin_buffer, BUFSIZ, 1, stdin); */
       /* printf("str: %s\n", stdin_buffer); */
       /* printf("read %d bytes\n", count); */
-      printf("Error: Include file name\n");
-      return(EXIT_FAILURE);
+      if (listen_flag == false){
+        printf("Error: Include file name\n");
+        return(EXIT_FAILURE);
+      }
     }
     else if(n_non_flagged_opts == 1)
     {      
@@ -171,12 +171,6 @@ int parse_args(int argc, char **argv)
     else
       rc = fsnd_client(file_name, verbose);
   /*elseclosing } */
-
-  //printf("host: %s\n", fsnd_host);
-  //printf("port: %s\n", fsnd_port);
-  //printf("file name: %s\n", file_name);
-  //printf("offset: %d\n", offset);
-  //printf("bytes: %d\n", bytes);
 
   return(0);
 }

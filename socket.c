@@ -14,21 +14,14 @@ int socket_dial(const char *host, const char *port, bool is_verbose) {
   struct addrinfo *hostinfo;
   int s; 
 
-  if(socket_resolve(host, port, &hostinfo, is_verbose) < 0){
-    printf("breaking here\n");
+  if(socket_resolve(host, port, &hostinfo, is_verbose) < 0)
     return -1;
-  }
-  if((s = socket(hostinfo->ai_family, hostinfo->ai_socktype, hostinfo->ai_protocol)) < 0){
-    printf("no breaking here\n");
+  if((s = socket(hostinfo->ai_family, hostinfo->ai_socktype, hostinfo->ai_protocol)) < 0)
     return -1;
-  }
-  if(connect(s, hostinfo->ai_addr, hostinfo->ai_addrlen) < 0){
-    struct sockaddr_in* temp = (struct sockaddr_in*)hostinfo->ai_addr;
-    printf("ip address : %s\n", inet_ntoa(temp->sin_addr));
-    printf("nope its breaking here\n");
+  if(connect(s, hostinfo->ai_addr, hostinfo->ai_addrlen) < 0)
     return -1;
-  }
 
+  freeaddrinfo(hostinfo);
   return s;
 }
 
@@ -44,5 +37,7 @@ int socket_listen(const char *port, bool is_verbose) {
     return -1;
   if(listen(s, 10) < 0)
     return -1;
+
+  freeaddrinfo(hostinfo);
   return s;
 }

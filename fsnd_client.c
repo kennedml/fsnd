@@ -1,14 +1,4 @@
 #include "fsnd_client.h"
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <arpa/inet.h>
 
 int fsnd_client(char* file, bool is_verbose)
 {
@@ -64,11 +54,19 @@ int fsnd_client(char* file, bool is_verbose)
       if (fseek(fp, offset, SEEK_SET) != 0) { /* Error */ }
 
       /* Read the entire file into memory. */
-      size_t newLen;
+      int newLen;
       //size_t newLen = fread(source, sizeof(char), bufsize, fp);
       while((newLen = fread(source, sizeof(char), strlen(file_size),fp)) > 0)
       {
-        write(sockfd, source, newLen);
+        int total = 0;
+        do{
+          int written = write(sockfd, source, newLen);
+          if (written == -1){
+            printf("Failed to write: %s\n", strerror(errno));
+            return 1;
+          }
+          total += written;
+        }while(total < newLen);
       }
 
     }
