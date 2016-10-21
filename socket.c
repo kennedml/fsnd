@@ -14,12 +14,18 @@ int socket_dial(const char *host, const char *port, bool is_verbose) {
   struct addrinfo *hostinfo;
   int s; 
 
-  if(socket_resolve(host, port, &hostinfo, is_verbose) < 0)
+  if(socket_resolve(host, port, &hostinfo, is_verbose) < 0){
+    printf("breaking here\n");
     return -1;
-  if((s = socket(hostinfo->ai_family, hostinfo->ai_socktype, hostinfo->ai_protocol)) < 0)
+  }
+  if((s = socket(hostinfo->ai_family, hostinfo->ai_socktype, hostinfo->ai_protocol)) < 0){
+    printf("no breaking here\n");
     return -1;
-  if(connect(s, hostinfo->ai_addr, hostinfo->ai_addrlen) < 0)
+  }
+  if(connect(s, hostinfo->ai_addr, hostinfo->ai_addrlen) < 0){
+    printf("nope its breaking here\n");
     return -1;
+  }
 
   return s;
 }
