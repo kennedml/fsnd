@@ -68,13 +68,13 @@ int parse_args(int argc, char **argv)
   {
     if (n_non_flagged_opts == 1){
       file_name = argv[optind];
-      fsnd_port = default_port;
-      fsnd_host = default_host;
     } else {
       file_name = NULL;
-      fsnd_port = default_port;
-      fsnd_host = default_host;
     }
+    if (fsnd_port == NULL)
+      fsnd_port = default_port;
+    if (fsnd_host == NULL)
+      fsnd_host = default_host;
     rc = fsnd_listen(file_name, verbose);
   }
   else
