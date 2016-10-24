@@ -61,7 +61,7 @@ int fsnd_client(char* file, bool is_verbose)
 
       if(verbose){ printf("File size: %ld\n", bufsize);}
 
-      if (bytes > 0){
+      if (bytes > 0L){
         sprintf(file_size, "%ld", bytes);
       }
       else{
