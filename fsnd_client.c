@@ -7,8 +7,9 @@ int fsnd_client(char* file, bool is_verbose)
   char *source;
 
   // Change these to not be hard-coded
-  const char *kdc_host = "45.55.58.196";
-  const char *kdc_port = "9285";
+  //const char *kdc_host = "45.55.58.196";
+  const char *kdc_host = "localhost";
+  const char *kdc_port = "9286";
 
   printf("Dialing kdc host\n");
 
@@ -17,12 +18,13 @@ int fsnd_client(char* file, bool is_verbose)
   printf("kdc_sockfd: %d\n", kdc_sockfd);
 
   // Create nonce to send to KDC
-  long seed = 432455647892341;
+  char nonce_str[1024] = "";
+  long seed = 5647892341;
   unsigned long int nonce = generate_nonce(seed);
-
+  sprintf(nonce_str, "%lu", nonce);
   // send nonce to KDC
-  printf("Sending nonce %ld to KDC\n", nonce);
-  write(kdc_sockfd, nonce, sizeof(nonce));
+  printf("Sending nonce %s to KDC\n", nonce_str);
+  write(kdc_sockfd, nonce_str, strlen(nonce_str));
 
   printf("Dialing server host\n");
   server_sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);

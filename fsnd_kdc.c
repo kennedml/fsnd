@@ -10,20 +10,22 @@ int run_kdc()
     struct sockaddr_storage addr;
     socklen_t addr_size;
     
-    listen_fd = socket_listen("9285", true);
+    listen_fd = socket_listen("9286", true);
 
     if(listen_fd < 0)
     {
-        printf("Failed to listen to port: %d\n", fsnd_port);
+        printf("Failed to listen to port: %s\n", fsnd_port);
         return errno;
     }
     printf("listen_fd: %d\n", listen_fd);
     
     conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
-    //char nonce[sizeof(unsigned long int)];
-    unsigned long int nonce;
-    read(conn_fd, nonce, sizeof(unsigned long int)); 
-    printf("nonce: %ld\n", nonce);
+    char nonce[1024] = "";
+    //unsigned long int nonce;
+    read(conn_fd, nonce, sizeof(long unsigned int)); 
+    unsigned long int nonce_int = atol(nonce);
+    printf("nonce: %lu\n", nonce_int);
+
     while(1)
     {
     }
