@@ -22,7 +22,7 @@ int run_kdc()
     conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
     //char nonce[sizeof(unsigned long int)];
     unsigned long int nonce;
-    read(conn_fd, nonce, sizeof(nonce)); 
+    read(conn_fd, nonce, sizeof(unsigned long int)); 
     printf("nonce: %ld\n", nonce);
     while(1)
     {

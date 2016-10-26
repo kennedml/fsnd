@@ -21,7 +21,7 @@ int fsnd_client(char* file, bool is_verbose)
   unsigned long int nonce = generate_nonce(seed);
 
   // send nonce to KDC
-  printf("Sending nonce to KDC\n");
+  printf("Sending nonce %ld to KDC\n", nonce);
   write(kdc_sockfd, nonce, sizeof(nonce));
 
   printf("Dialing server host\n");
