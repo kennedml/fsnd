@@ -63,17 +63,8 @@ int fsnd_client(char* file, bool is_verbose)
         printf("CLIENT BYTES: %d FILESIZE: %d\n", bytes, file_size);
       }
       else{
-        /* sprintf(file_size, "%ju", (intmax_t)sb.st_size); */
         file_size = (int)sb.st_size;
-        /* printf("filesize: %s, size: %ju, intmax_t: %ld\n", file_size, (intmax_t)sb.st_size, strlen(file_size)); */
-        /* printf("sizeof: %ld\n", sizeof(file_size)); */
-        /* printf("int: %d, intmax_t: %ju, long: %lu\n", (int)sb.st_size,(intmax_t)sb.st_size,(long)sb.st_size); */
       }
-      printf("CLIENT BYTES: %d\n", bytes);
-      printf("CLIENT OFFSET: %d\n", offset);
-
-      // send file size to server
-      /* write(server_sockfd, file_size, strlen(file_size)); */
 
       /* Allocate our buffer to that size. */
       source = (char*)calloc(file_size, sizeof(char));

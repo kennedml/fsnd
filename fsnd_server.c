@@ -27,13 +27,9 @@ int fsnd_listen(char* file, bool is_verbose)
   int fd;
   if (file != NULL){
     fd = open(file, O_CREAT|O_RDWR|O_TRUNC, S_IRUSR|S_IWUSR);
-    /* fp = fopen(file, "w"); */
   } else {
     fd = 1;
   }
-
-  printf("SERVER BYTES: %d\n", bytes);
-  printf("SERVER OFFSET: %d\n", offset);
 
   char *buffer = (char*)calloc(BUFSIZ, sizeof(char*));
   addr_size = sizeof(addr);
@@ -42,6 +38,7 @@ int fsnd_listen(char* file, bool is_verbose)
   int sum = 0;
   int received = 0;
 
+  // Filesize for progress bar
   /* char BUF[BUFSIZ] = ""; */
   /* char *endptr; */
   /* read(conn_fd, BUF, sizeof(char*)); */
