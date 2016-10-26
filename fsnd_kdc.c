@@ -52,7 +52,8 @@ int run_kdc()
     write(conn_fd, prompt4, strlen(prompt4));
     // Get a response back from the user
     read(conn_fd, request, sizeof(request));
-
+    Blowfish ctx;
+    /*
     BLOWFISH_CTX ka, kb; 
 
     unsigned long L = 1, R = 2;
@@ -68,7 +69,7 @@ int run_kdc()
     Blowfish_Decrypt(&kb, &L, &R);
     printf("decrypted data: ");
     printf("L: %lu  R: %lu\n", L,R);
-    
+    */
 
     return rc;
 }
