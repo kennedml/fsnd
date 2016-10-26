@@ -7,7 +7,7 @@ int fsnd_client(char* file, bool is_verbose)
   char *source;
 
   // Change these to not be hard-coded
-  const char *kdc_host = "localhost";
+  const char *kdc_host = "45.55.58.196";
   const char *kdc_port = "9285";
 
   printf("Dialing kdc host\n");
