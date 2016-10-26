@@ -18,6 +18,11 @@ int run_kdc()
         return errno;
     }
     printf("listen_fd: %d\n", listen_fd);
+    
+    conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
+    char nonce[sizeof(unsigned long int)];
+    read(conn_fd, nonce, sizeof(nonce)); 
+    printf("nonce: %s\n", nonce);
     while(1)
     {
     }
