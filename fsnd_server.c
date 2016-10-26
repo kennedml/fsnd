@@ -1,5 +1,6 @@
 #include "fsnd_server.h"
 #include <fcntl.h>
+#include <inttypes.h>
 
 int fsnd_listen(char* file, bool is_verbose)
 {
@@ -25,12 +26,14 @@ int fsnd_listen(char* file, bool is_verbose)
   /* FILE *fp; */
   int fd;
   if (file != NULL){
-    fd = open(file, O_CREAT|O_WRONLY, 0777);
+    fd = open(file, O_CREAT|O_RDWR|O_TRUNC, S_IRUSR|S_IWUSR);
     /* fp = fopen(file, "w"); */
   } else {
     fd = 1;
   }
 
+  printf("SERVER BYTES: %d\n", bytes);
+  printf("SERVER OFFSET: %d\n", offset);
 
   char *buffer = (char*)calloc(BUFSIZ, sizeof(char*));
   addr_size = sizeof(addr);
@@ -39,18 +42,20 @@ int fsnd_listen(char* file, bool is_verbose)
   int sum = 0;
   int received = 0;
 
-  char BUF[BUFSIZ] = "";
-  read(conn_fd, BUF, sizeof(char*));
-  unsigned long long int file_size = atoll(BUF);
+  /* char BUF[BUFSIZ] = ""; */
+  /* char *endptr; */
+  /* read(conn_fd, BUF, sizeof(char*)); */
+  /* printf("BUF %s\n", BUF); */
+  /* intmax_t file_size = strtoimax(BUF, &endptr, 10); */
 
-  if(verbose){printf("Receiving file: %s - Filesize: %llu\n", file, file_size);} 
+  if(verbose){printf("Receiving file: %s\n", file);} 
 
   while(1){
-    double progress = 0;
+    /* double progress = 0; */
     while((received = read(conn_fd, buffer, 4096)) > 0)
     {
       sum += received;
-      progress = (double)sum / (double)file_size;
+      /* progress = (double)sum / (double)file_size; */
 
       int total = 0;
       while(total < received){
@@ -63,7 +68,8 @@ int fsnd_listen(char* file, bool is_verbose)
       }
 
       if (file != NULL){
-        fprintf(stdout, "\rprogress= %f | bytes received: %d", progress, sum);
+        /* fprintf(stdout, "\rprogress= %f | bytes received: %d", progress, sum); */
+        fprintf(stdout, "\rBytes Received: %d", sum);
         fflush(stdout);
       }
     }
