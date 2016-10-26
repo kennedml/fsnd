@@ -3,9 +3,9 @@
 int run_kdc()
 {
     int rc = 0;
-    long seed = 5647892341;
+    long seed = 432455647892341;
     unsigned long int nonce = generate_nonce(seed);
-    printf("seed: %ld\n", nonce);
+    printf("nonce: %ld\n", nonce);
     // File Descriptors
     int listen_fd = 0;
     int conn_fd = 0;
