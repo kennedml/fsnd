@@ -3,6 +3,7 @@
 
 bool verbose = false;
 bool listen_flag = false;
+bool kdc_flag = false;
 char* default_port = "9285";
 char* default_host = "localhost";
 char *fsnd_port;
@@ -32,7 +33,7 @@ int parse_args(int argc, char **argv)
   bool has_port_flag = false;
 
 
-  while((opt = getopt(argc, argv, "hvp:n:o:l")) != -1)
+  while((opt = getopt(argc, argv, "hkvp:n:o:l")) != -1)
   {
     switch(opt)
     {
@@ -43,6 +44,9 @@ int parse_args(int argc, char **argv)
               __FILE__,__LINE__,__func__, rc);
         }
         exit(0);
+      case KDC:
+        kdc_flag = true;
+        break;
       case VERBOSE:
         verbose = true;
         break;
@@ -63,6 +67,12 @@ int parse_args(int argc, char **argv)
   }
 
   int n_non_flagged_opts = argc - optind;
+
+  if(kdc_flag)
+  {
+        rc = run_kdc();
+        return(0);
+  }
 
   if(listen_flag)
   {

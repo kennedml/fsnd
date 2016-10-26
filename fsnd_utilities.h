@@ -12,6 +12,7 @@
 #include "fsnd_server.h"
 #include "socket.h"
 #include <ctype.h>
+#include "fsnd_kdc.h"
 
 extern bool verbose;
 extern bool listen_flag;
@@ -27,7 +28,8 @@ typedef enum
     PORT='p',
     BYTES='n',
     OFFSET='o',
-    LISTEN='l'
+    LISTEN='l',
+    KDC='k'
 } flags;
 
 int parse_args(int argc, char **argv);

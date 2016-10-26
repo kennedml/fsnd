@@ -2,13 +2,28 @@
 
 int fsnd_client(char* file, bool is_verbose)
 {
-  int sockfd = 0;
+  int server_sockfd = 0;
+  int kdc_sockfd;
   char *source;
 
-  sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);
-  if (sockfd < 0)
+  // Change these to not be hard-coded
+  const char *kdc_host = "localhost";
+  const char *kdc_port = "9285";
+
+  printf("Dialing kdc host\n");
+
+  kdc_sockfd = socket_dial(kdc_host, kdc_port, is_verbose);
+
+  printf("kdc_sockfd: %d\n", kdc_sockfd);
+  printf("Dialing server host\n");
+
+  server_sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);
+  
+  printf("server_sockfd: %d\n", server_sockfd);
+
+  if (server_sockfd < 0)
   {
-    printf("\n Error : Could not create socket \n");
+    printf("\n Error : Could not create socket connection with server \n");
     return 1;
   }
 
@@ -44,7 +59,7 @@ int fsnd_client(char* file, bool is_verbose)
       }
 
       // send file size to server
-      write(sockfd, file_size, strlen(file_size));
+      write(server_sockfd, file_size, strlen(file_size));
 
       /* Allocate our buffer to that size. */
       source = malloc(sizeof(char) * (bufsize));
@@ -58,7 +73,7 @@ int fsnd_client(char* file, bool is_verbose)
       {
         int total = 0;
         do{
-          int written = write(sockfd, source, newLen);
+          int written = write(server_sockfd, source, newLen);
           if (written == -1){
             printf("Failed to write: %s\n", strerror(errno));
             return 1;
@@ -72,7 +87,8 @@ int fsnd_client(char* file, bool is_verbose)
   }
   free(source);
   fclose(fp);
-  close(sockfd);
+  close(server_sockfd);
+  close(kdc_sockfd);
   if(verbose){printf("Sent %d Bytes Successfully!\n", sum);} 
   return 0;
 }
