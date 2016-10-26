@@ -18,8 +18,8 @@ extern bool verbose;
 extern bool listen_flag;
 extern char* fsnd_port;
 extern char* fsnd_host;
-extern long bytes;
-extern long offset;
+extern int bytes;
+extern int offset;
 
 typedef enum
 {

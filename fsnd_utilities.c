@@ -9,8 +9,8 @@ char* default_host = "localhost";
 char *fsnd_port;
 char *fsnd_host;
 char *file_name;
-long bytes = 0L;
-long offset = 0L;
+int bytes = 0;
+int offset = 0;
 
 int print_help()
 {
@@ -56,9 +56,11 @@ int parse_args(int argc, char **argv)
         break;
       case BYTES:
         bytes = atoi(optarg);
+        printf("BYTES: %d\n", bytes);
         break;
       case OFFSET:
         offset = atoi(optarg);
+        printf("OFFSET: %d\n", offset);
         break;
       case LISTEN:
         listen_flag = true;
