@@ -35,4 +35,6 @@ typedef enum
 int parse_args(int argc, char **argv);
 int print_help();
 bool is_valid_file(char *path);
+unsigned long int generate_nonce(long nonce);
+
 #endif
