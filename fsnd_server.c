@@ -125,20 +125,8 @@ int fsnd_listen(char* file, bool is_verbose)
   ctx_session.Decrypt(hex_str, strlen(hex_str));
   printf("Decrypted hex representation of test string: %s\n", hex_str);
 
-  char buff = 0;
-  char *hex_to_str = (char*)calloc(1024, 1);
-  for(int i = 0; i < (int)strlen(hex_str); i++){
-    if (i % 2 != 0){
-      sprintf(hex_to_str, "%s%c", hex_to_str, hex_to_ascii(buff, hex_str[i]));
-    } else{
-      buff = hex_str[i];
-    }
-  }
-  hex_to_str[strlen(hex_to_str)] = '\0';
-  printf("Decrypted test string: %s\n", hex_to_str);
-
-  free(hex_to_str);
-
+  hex_str = hex_to_string(hex_str);
+  printf("Decrypted String: %s\n", hex_str);
 
   int sum = 0;
   int received = 0;
@@ -159,6 +147,10 @@ int fsnd_listen(char* file, bool is_verbose)
     {
       sum += received;
       /* progress = (double)sum / (double)file_size; */
+      /* ctx_session.Decrypt(buffer, received); */
+      /* printf("Dec(Hex_str): %s\n", buffer); */
+
+      /* hex_to_string(buffer); */
 
       int total = 0;
       while(total < received){

@@ -122,7 +122,6 @@ int fsnd_client(char* file, bool is_verbose)
   printf("Example string representation(ASCII): %s\n", str);
 
   int i, j;
-
   for(i = 0; i < (int)strlen(str); i++, j+=2){
     sprintf((char*)temp+j, "%02X", str[i]);
   }
@@ -182,9 +181,31 @@ int fsnd_client(char* file, bool is_verbose)
       int newLen;
       if((newLen = fread(source, sizeof(char), file_size,fp)) > 0)
       {
+        //convert from str to hex
+        /* char tmp[1024]; */
+
+        /* j = 0; */
+        /* for(i = 0; i < newLen; i++, j+=2){ */
+        /*   sprintf((char*)tmp+j, "%02X", source[i]); */
+        /* } */
+
+        /* tmp[j] = '\0'; */
+        /* char *hstr = (char*)malloc(file_size); */
+
+        /* while(strlen(hstr) % 8){ */
+        /*   sprintf(hstr, "%-1s", hstr); */
+        /* } */
+
+        /* printf("hex string length: %lu\n", strlen(hstr)); */
+        /* ctx_session.Encrypt(hstr, strlen(hstr)); */
+        /* printf("En(Hex_str): %s\n", hstr); */
+
+        printf("newLen: %d\n", newLen);
+        
         int total = 0;
         do{
           int written = write(server_sockfd, source, newLen);
+          /* int written = write(server_sockfd, hstr, strlen(hstr)); */
           if (written == -1){
             printf("Failed to write: %s\n", strerror(errno));
             return 1;
