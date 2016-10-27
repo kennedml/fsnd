@@ -31,7 +31,7 @@ int run_kdc()
     printf("listen_fd: %d\n", listen_fd);
     
     conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
-    char nonce[1024] = "";
+    char nonce[64] = "";
     //unsigned long int nonce;
     read(conn_fd, nonce, sizeof(long unsigned int)); 
     unsigned long int nonce_int = atol(nonce);
@@ -39,22 +39,40 @@ int run_kdc()
     
 
     /* char buffer[128] = ""; */
-    char *buffer = (char*)malloc(256);
+    char *kb_buffer = (char*)malloc(128);
     printf("ks: %s\n", ks_response);
     char ida[64] = "thing1.cs.uwec.edu";
 
-    sprintf(buffer, "%-64s%-64s", ks_response, ida);
-    printf("Buffer: %s\n", buffer);
+    sprintf(kb_buffer, "%-64s%-64s", ks_response, ida);
+    printf("Buffer: %s\n", kb_buffer);
 
-    Blowfish ks_ctx;
+    Blowfish kb_ctx;
     // Encrypts with KB
-    ks_ctx.Set_Passwd(kb_response);
-    ks_ctx.Encrypt(buffer, 128);
-    printf("encrypted buffer: %s\n", buffer);
-    ks_ctx.Decrypt(buffer, 128); 
-    printf("decrypted buffer: %s\n", buffer);
+    kb_ctx.Set_Passwd(kb_response);
+    kb_ctx.Encrypt(kb_buffer, 128);
+    /* printf("encrypted buffer: %s\n", kb_buffer); */
+    /* kb_ctx.Decrypt(buffer, 128); */ 
+    /* printf("decrypted buffer: %s\n", kb_buffer); */
 
-    free(buffer);
+    char *ka_buffer = (char*)malloc(320);
+
+    printf("sizeof: %lu, strlen: %lu\n", sizeof(kb_buffer), strlen(kb_buffer));
+
+    char request[64] = "thing2.cs.uwec.edu";
+    sprintf(ka_buffer, "%-64s%-64s%-64lu%128s", ks_response, request, nonce_int, kb_buffer);
+
+    printf("ka_buffer: %s\n", ka_buffer);
+
+    Blowfish ka_ctx;
+    ka_ctx.Set_Passwd(ka_response);
+    ka_ctx.Encrypt(ka_buffer, 320);
+    printf("encrypted buffer: %s\n", ka_buffer);
+    printf("\n\n");
+    ka_ctx.Decrypt(ka_buffer, 320); 
+    printf("decrypted buffer: %s\n", ka_buffer);
+
+    free(kb_buffer);
+    free(ka_buffer);
 
 
     return rc;
