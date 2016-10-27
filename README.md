@@ -9,15 +9,4 @@ How to run Server side
 
 How to run client side
     use command "./fsnd" appending any necessary flags
-   
-
-HOW TO RUN WITH ENCRYPTION
-
-from thing0:
-    - start kdc ("./fsnd -k")
-
-from thing2:
-    - start server ("./fsnd -l -v file.out")
-
-from thing1:
-    - start client ("./fsnd file_to_send.txt")
+    
