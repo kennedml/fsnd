@@ -74,6 +74,14 @@ int fsnd_client(char* file, bool is_verbose)
 
   write(server_sockfd, enc_b, 128);
 
+  char *nonce_b = (char*)malloc(64);
+  read(server_sockfd, nonce_b, 64);
+
+  Blowfish ctx_session;
+  ctx_session.Set_Passwd((char*)"ks");
+  ctx_session.Decrypt(nonce_b, 64);
+  printf("nonce b: %s\n", nonce_b);
+
   FILE *fp;
   fp = fopen(file, "rb");
   if(!fp)
@@ -133,6 +141,7 @@ int fsnd_client(char* file, bool is_verbose)
   free(nonce);
   free(request);
   free(enc_b);
+  free(nonce_b);
   fclose(fp);
   close(server_sockfd);
   close(kdc_sockfd);

@@ -69,6 +69,14 @@ int fsnd_listen(char* file, bool is_verbose)
   
  
   // Send nonce b over socket encrypted with session key
+  Blowfish ctx_session;
+  ctx_session.Set_Passwd((char*)"ks");
+  ctx_session.Encrypt(nonce, 64);
+  printf("En(Nonce): %s\n", nonce);
+  //ctx_session.Decrypt(nonce, 64);
+  //printf("De(nonce: %s\n", nonce);
+
+  write(conn_fd, nonce, 64);
 
   int sum = 0;
   int received = 0;
