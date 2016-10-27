@@ -37,23 +37,21 @@ int run_kdc()
     unsigned long int nonce_int = atol(nonce);
     printf("nonce received: %lu\n", nonce_int); 
     
-    Blowfish ks_ctx;
-    
-    // Encrypts with KB
-    ks_ctx.Set_Passwd(kb_response);
 
     /* char buffer[128] = ""; */
-    char *buffer = (char*)calloc(128, sizeof(char));
+    char *buffer = (char*)malloc(256);
     printf("ks: %s\n", ks_response);
     char ida[64] = "thing1.cs.uwec.edu";
 
-    memcpy(buffer, ks_response, sizeof(ks_response));
-    memcpy(buffer+sizeof(ks_response), ida, sizeof(ida)+1);
-
+    sprintf(buffer, "%-64s%-64s", ks_response, ida);
     printf("Buffer: %s\n", buffer);
 
-    ks_ctx.Encrypt(buffer, sizeof(buffer));
-    ks_ctx.Decrypt(buffer, sizeof(buffer)); 
+    Blowfish ks_ctx;
+    // Encrypts with KB
+    ks_ctx.Set_Passwd(kb_response);
+    ks_ctx.Encrypt(buffer, 128);
+    printf("encrypted buffer: %s\n", buffer);
+    ks_ctx.Decrypt(buffer, 128); 
     printf("decrypted buffer: %s\n", buffer);
 
     free(buffer);
