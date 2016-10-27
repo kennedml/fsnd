@@ -31,24 +31,24 @@ int run_kdc()
     unsigned long int nonce_int = atol(nonce);
     
     // Send the first prompt to the user
-    char *prompt1 = "Please enter Ks: ";
+    char prompt1[] = "Please enter Ks: ";
     write(conn_fd, prompt1, strlen(prompt1));
     // Get a response back from the user
     read(conn_fd, ks_response, sizeof(ks_response));
 
     // Send the second prompt to the user
-    char *prompt2 = "Please enter Ka: ";
+    char prompt2[] = "Please enter Ka: ";
     write(conn_fd, prompt2, strlen(prompt2));
     // Get a response back from the user
     read(conn_fd, ka_response, sizeof(ka_response));
     
     // Send the second prompt to the user
-    char *prompt3 = "Please enter Kb: ";
+    char prompt3[] = "Please enter Kb: ";
     write(conn_fd, prompt3, strlen(prompt3));
     // Get a response back from the user
     read(conn_fd, kb_response, sizeof(kb_response));
     
-    char *prompt4 = "Please enter the host address: ";
+    char prompt4[] = "Please enter the host address: ";
     write(conn_fd, prompt4, strlen(prompt4));
     // Get a response back from the user
     read(conn_fd, request, sizeof(request));

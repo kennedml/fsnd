@@ -4,8 +4,8 @@
 bool verbose = false;
 bool listen_flag = false;
 bool kdc_flag = false;
-char* default_port = "9285";
-char* default_host = "localhost";
+char default_port[] = "9285";
+char default_host[] = "localhost";
 char *fsnd_port;
 char *fsnd_host;
 char *file_name;

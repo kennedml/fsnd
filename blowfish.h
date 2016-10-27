@@ -10,7 +10,7 @@
 #define MAX_PASSWD   56  // 448bits
 
 //#define BIG_ENDIAN
-#define LITTLE_ENDIAN
+//#define LITTLE_ENDIAN
 
 
 /*#ifdef BIG_ENDIAN
