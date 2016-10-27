@@ -1,6 +1,7 @@
 #include "fsnd_server.h"
 #include <fcntl.h>
 #include <inttypes.h>
+#include <string>
 
 int fsnd_listen(char* file, bool is_verbose)
 {
@@ -117,8 +118,30 @@ int fsnd_listen(char* file, bool is_verbose)
   /* printf("function nonce: %lu\n", orig_fnonce); */
   /* printf("check: %d\n", f_bnonce == orig_fnonce); */
 
+  char *hex_str = (char*)malloc(64);
+  read(conn_fd, hex_str, 64);
+
+  ctx_session.Decrypt(hex_str, strlen(hex_str));
+  printf("Dec(Hex_str): %s\n", hex_str);
+
+  char buff = 0;
+  char *hex_to_str = (char*)calloc(1024, 1);
+  for(int i = 0; i < (int)strlen(hex_str); i++){
+    if (i % 2 != 0){
+      sprintf(hex_to_str, "%s%c", hex_to_str, hex_to_ascii(buff, hex_str[i]));
+    } else{
+      buff = hex_str[i];
+    }
+  }
+  hex_to_str[strlen(hex_to_str)] = '\0';
+  printf("Decrypted String: %s\n", hex_to_str);
+
+  free(hex_to_str);
+
+
   int sum = 0;
   int received = 0;
+
 
   // Filesize for progress bar
   /* char BUF[BUFSIZ] = ""; */

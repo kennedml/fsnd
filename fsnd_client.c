@@ -132,22 +132,8 @@ int fsnd_client(char* file, bool is_verbose)
 
   ctx_session.Encrypt((void*)hex_str.c_str(), hex_str.length());
   printf("En(Hex_str): %s\n", hex_str.c_str());
-  ctx_session.Decrypt((void*)hex_str.c_str(), hex_str.length());
-  printf("Dec(Hex_str): %s\n", hex_str.c_str());
 
-  char buff = 0;
-  char *hex_to_str = (char*)malloc(BUFSIZ);
-  for(i = 0; i < (int)hex_str.length(); i++){
-    if (i % 2 != 0){
-      sprintf(hex_to_str, "%s%c", hex_to_str, hex_to_ascii(buff, hex_str[i]));
-    } else{
-      buff = hex_str[i];
-    }
-  }
-
-  fflush(stdout);
-  printf("Returned to String: %s\n", hex_to_str);
-
+  write(server_sockfd, hex_str.c_str(), (int)hex_str.length());
 
   FILE *fp;
   fp = fopen(file, "rb");
@@ -208,7 +194,6 @@ int fsnd_client(char* file, bool is_verbose)
   free(request);
   free(enc_b);
   free(nonce_b);
-  free(hex_to_str);
   free(source);
   fclose(fp);
   close(server_sockfd);
