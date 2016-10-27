@@ -16,7 +16,7 @@ int fsnd_client(char* file, bool is_verbose)
   scanf("%s", nonce_str);
 
   printf("Please enter private key for a: ");
-  scanf("%s", nonce_str);
+  scanf("%s", ka);
   // Change these to not be hard-coded
   //const char *kdc_host = "45.55.58.196";
   const char *kdc_host = "localhost";
