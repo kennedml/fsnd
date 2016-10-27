@@ -46,12 +46,12 @@ int fsnd_listen(char* file, bool is_verbose)
 
   char receive_enc[128] = "";
   read(conn_fd, receive_enc, 128);
-  printf("receive_enc: %s\n", receive_enc);
+  printf("\nEncrypted receive buffer: %s\n", receive_enc);
   
   Blowfish ctx_b;
   ctx_b.Set_Passwd(kb);
   ctx_b.Decrypt(receive_enc, 128);
-  printf("decrypted: %s\n", receive_enc);
+  printf("\nDecrypted receive buffer: %s\n", receive_enc);
 
   char *id_a = (char*)malloc(64);
   char *session_key = (char*)malloc(64);
@@ -65,7 +65,6 @@ int fsnd_listen(char* file, bool is_verbose)
   //session_key[64] = '\0';
   //memcpy(id_a, receive_enc + 64, 64);
   //id_a[64] = '\0';
-  printf("session_key: %s\n", session_key);
   printf("id_a: %s\n", id_a);
   
  
@@ -76,16 +75,17 @@ int fsnd_listen(char* file, bool is_verbose)
       break;
     }
   }
-  printf("session_key truncated: %s\n", session_key);
+  printf("Session key: %s\n", session_key);
 
   // Send nonce b over socket encrypted with session key
   Blowfish ctx_session;
   ctx_session.Set_Passwd(session_key);
   ctx_session.Encrypt(nonce, 64);
-  printf("En(Nonce): %s\n", nonce);
+  printf("Encrypted nonce: %s\n", nonce);
   //ctx_session.Decrypt(nonce, 64);
   //printf("De(nonce: %s\n", nonce);
 
+  printf("Writing encrypted nonce to socket\n");
   write(conn_fd, nonce, 64);
 
   //TODO: This should decrypt original and IDA nonce for verification
@@ -119,10 +119,11 @@ int fsnd_listen(char* file, bool is_verbose)
   /* printf("check: %d\n", f_bnonce == orig_fnonce); */
 
   char *hex_str = (char*)malloc(64);
+  printf("Waiting for hex representation of test string\n");
   read(conn_fd, hex_str, 64);
 
   ctx_session.Decrypt(hex_str, strlen(hex_str));
-  printf("Dec(Hex_str): %s\n", hex_str);
+  printf("Decrypted hex representation of test string: %s\n", hex_str);
 
   char buff = 0;
   char *hex_to_str = (char*)calloc(1024, 1);
@@ -134,7 +135,7 @@ int fsnd_listen(char* file, bool is_verbose)
     }
   }
   hex_to_str[strlen(hex_to_str)] = '\0';
-  printf("Decrypted String: %s\n", hex_to_str);
+  printf("Decrypted test string: %s\n", hex_to_str);
 
   free(hex_to_str);
 

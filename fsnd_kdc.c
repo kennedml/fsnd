@@ -28,23 +28,22 @@ int run_kdc()
         printf("Failed to listen to port: %s\n", fsnd_port);
         return errno;
     }
-    printf("listen_fd: %d\n", listen_fd);
     
     conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
     char nonce[64] = "";
     //unsigned long int nonce;
     read(conn_fd, nonce, sizeof(long unsigned int)); 
     unsigned long int nonce_int = atol(nonce);
-    printf("nonce received: %lu\n", nonce_int); 
+    printf("Request for session key sent with nonce: %lu\n", nonce_int); 
     
 
     /* char buffer[128] = ""; */
     char *kb_buffer = (char*)malloc(128);
-    printf("ks: %s\n", ks_response);
+    printf("Session Key Recv'd: %s\n", ks_response);
     char ida[64] = "thing1.cs.uwec.edu";
 
     sprintf(kb_buffer, "%-64s%-64s", ks_response, ida);
-    printf("Buffer: %s\n", kb_buffer);
+    //printf("Buffer: %s\n", kb_buffer);
 
     Blowfish kb_ctx;
     // Encrypts with KB
@@ -54,14 +53,12 @@ int run_kdc()
     /* kb_ctx.Decrypt(buffer, 128); */ 
     /* printf("decrypted buffer: %s\n", kb_buffer); */
 
-    char *ka_buffer = (char*)malloc(320);
-
-    printf("sizeof: %lu, strlen: %lu\n", sizeof(kb_buffer), strlen(kb_buffer));
+   char *ka_buffer = (char*)malloc(320);
 
     char request[64] = "thing2.cs.uwec.edu";
     sprintf(ka_buffer, "%-64s%-64s%-64lu%128s", ks_response, request, nonce_int, kb_buffer);
 
-    printf("ka_buffer: %s\n", ka_buffer);
+    printf("Buffer encrypted with Kb: %s\n", ka_buffer);
 
     Blowfish ka_ctx;
     ka_ctx.Set_Passwd(ka_response);
@@ -71,6 +68,8 @@ int run_kdc()
     //ka_ctx.Decrypt(ka_buffer, 320); 
     //printf("decrypted buffer: %s\n", ka_buffer);
     write(conn_fd, ka_buffer, 320);
+
+    printf("Key distribution complete. Closing KDC.\n");
 
     free(kb_buffer);
     free(ka_buffer);
