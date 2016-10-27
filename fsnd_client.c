@@ -6,6 +6,17 @@ int fsnd_client(char* file, bool is_verbose)
   int kdc_sockfd;
   char *source;
 
+  // Create nonce to send to KDC
+  char nonce_str[64] = "";
+  char ka[64] = "";
+
+  //long seed = 5647892341;
+  //unsigned long int nonce = generate_nonce(seed);
+  printf("Please enter nonce for a: ");
+  scanf("%s", nonce_str);
+
+  printf("Please enter private key for a: ");
+  scanf("%s", nonce_str);
   // Change these to not be hard-coded
   //const char *kdc_host = "45.55.58.196";
   const char *kdc_host = "localhost";
@@ -17,48 +28,11 @@ int fsnd_client(char* file, bool is_verbose)
 
   printf("kdc_sockfd: %d\n", kdc_sockfd);
 
-  // Create nonce to send to KDC
-  char nonce_str[1024] = "";
-  long seed = 5647892341;
-  unsigned long int nonce = generate_nonce(seed);
-  sprintf(nonce_str, "%lu", nonce);
+  
   // send nonce to KDC
   printf("Sending nonce %s to KDC\n", nonce_str);
   write(kdc_sockfd, nonce_str, strlen(nonce_str));
 
-  char prompt1_buffer[1024] = "";
-  char prompt2_buffer[1024] = "";
-  char prompt3_buffer[1024] = "";
-  char prompt4_buffer[1024] = "";
-  char ks_response[BUFSIZ] = "";
-  char ka_response[BUFSIZ] = "";
-  char kb_response[BUFSIZ] = "";
-  char host_response[BUFSIZ] = "";
-  
-  // Send first parameter
-  read(kdc_sockfd, prompt1_buffer, sizeof(prompt1_buffer));
-  printf("%s", prompt1_buffer);
-  scanf("%s", ks_response);
-  write(kdc_sockfd, ks_response, strlen(ks_response));
- 
-  // Send second parameter
-  read(kdc_sockfd, prompt2_buffer, sizeof(prompt2_buffer));
-  printf("%s", prompt2_buffer);
-  scanf("%s", ka_response);
-  write(kdc_sockfd, ka_response, strlen(ka_response));
-  
-
-  // Send third parameter
-  read(kdc_sockfd, prompt3_buffer, sizeof(prompt3_buffer));
-  printf("%s", prompt3_buffer);
-  scanf("%s", kb_response);
-  write(kdc_sockfd, kb_response, strlen(kb_response));
-
-  // Send fourth parameter
-  read(kdc_sockfd, prompt4_buffer, sizeof(prompt4_buffer));
-  printf("%s", prompt4_buffer);
-  scanf("%s", host_response);
-  write(kdc_sockfd, host_response, strlen(host_response));
 
   printf("Dialing server host\n");
   server_sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);

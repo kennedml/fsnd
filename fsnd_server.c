@@ -11,7 +11,14 @@ int fsnd_listen(char* file, bool is_verbose)
   struct sockaddr_storage addr;
   socklen_t addr_size;
   /* char *buffer = (char*)calloc(BUFSIZ, sizeof(char*)); */
-  
+
+  char nonce[64] = "";
+  char kb[64] = "";
+  printf("Please enter nonce for b: ");
+  scanf("%s", nonce);
+  printf("Please enter private key for b: ");
+  scanf("%s", kb);
+
   if(verbose){
     printf("Listening on port: %s \n", fsnd_port);
   }
