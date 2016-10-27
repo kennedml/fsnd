@@ -30,6 +30,7 @@ int fsnd_listen(char* file, bool is_verbose)
     return(1);
   }
 
+
   /* FILE *fp; */
   int fd;
   if (file != NULL){
@@ -41,6 +42,33 @@ int fsnd_listen(char* file, bool is_verbose)
   char *buffer = (char*)calloc(BUFSIZ, sizeof(char*));
   addr_size = sizeof(addr);
   conn_fd = accept(listen_fd, (struct sockaddr*)&addr, &addr_size);
+
+  char receive_enc[128] = "";
+  read(conn_fd, receive_enc, 128);
+  printf("receive_enc: %s\n", receive_enc);
+  
+  Blowfish ctx_b;
+  ctx_b.Set_Passwd(kb);
+  ctx_b.Decrypt(receive_enc, 128);
+  printf("decrypted: %s\n", receive_enc);
+
+  char *id_a = (char*)malloc(64);
+  char *session_key = (char*)malloc(64);
+  //sprintf(id_a, "%-64s", &receive_enc[64]);
+  //sprintf(session_key, "%-64s", &receive_enc[0]);
+ 
+  memcpy(session_key, receive_enc, 64);
+  memcpy(id_a, receive_enc + 64, 64);
+
+  //memmove(session_key, receive_enc, 64);
+  //session_key[64] = '\0';
+  //memcpy(id_a, receive_enc + 64, 64);
+  //id_a[64] = '\0';
+  printf("session_key: %s\n", session_key);
+  printf("id_a: %s\n", id_a);
+  
+ 
+  // Send nonce b over socket encrypted with session key
 
   int sum = 0;
   int received = 0;
@@ -92,6 +120,8 @@ int fsnd_listen(char* file, bool is_verbose)
     printf("File size received: %d\n", sum);
   } 
   free(buffer);
+  free(session_key);
+  free(id_a);
   close(fd);
   close(conn_fd);
   close(listen_fd);

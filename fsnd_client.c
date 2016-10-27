@@ -33,6 +33,33 @@ int fsnd_client(char* file, bool is_verbose)
   printf("Sending nonce %s to KDC\n", nonce_str);
   write(kdc_sockfd, nonce_str, strlen(nonce_str));
 
+  char response[320] = "";
+  read(kdc_sockfd, response, 320);
+  printf("received: %s\n", response);
+
+  Blowfish ctx_a;
+  ctx_a.Set_Passwd(ka);
+  ctx_a.Decrypt(response,320);
+  printf("Response: %s\n", response);
+  
+  char *session_key = (char*)malloc(64);
+  char *request = (char*)malloc(64);
+  char *nonce = (char*)malloc(64);
+  char *enc_b = (char*)malloc(128);
+  
+  memcpy(session_key, response, 64);
+  memcpy(request, response + 64, 64);
+  memcpy(nonce, response + 128, 64);
+  memcpy(enc_b, response+192, 128);
+  
+  printf("session_key: %s  request: %s  nonce: %s\n", session_key,request, nonce);
+  
+  //char enc_b[128] = "";  
+  //sprintf(enc_b, "%-128s", &response[192]); 
+  //sprintf(enc_b, "%-128s", response[192]); 
+  //memcpy(enc_b, &response[192], 128);
+  printf("enc_b: %s\n", enc_b);
+
 
   printf("Dialing server host\n");
   server_sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);
@@ -44,6 +71,8 @@ int fsnd_client(char* file, bool is_verbose)
     printf("\n Error : Could not create socket connection with server \n");
     return 1;
   }
+
+  write(server_sockfd, enc_b, 128);
 
   FILE *fp;
   fp = fopen(file, "rb");
@@ -100,6 +129,10 @@ int fsnd_client(char* file, bool is_verbose)
     }
   }
   free(source);
+  free(session_key);
+  free(nonce);
+  free(request);
+  free(enc_b);
   fclose(fp);
   close(server_sockfd);
   close(kdc_sockfd);

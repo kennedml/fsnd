@@ -66,10 +66,11 @@ int run_kdc()
     Blowfish ka_ctx;
     ka_ctx.Set_Passwd(ka_response);
     ka_ctx.Encrypt(ka_buffer, 320);
-    printf("encrypted buffer: %s\n", ka_buffer);
-    printf("\n\n");
-    ka_ctx.Decrypt(ka_buffer, 320); 
-    printf("decrypted buffer: %s\n", ka_buffer);
+    //printf("encrypted buffer: %s\n", ka_buffer);
+    //printf("\n\n");
+    //ka_ctx.Decrypt(ka_buffer, 320); 
+    //printf("decrypted buffer: %s\n", ka_buffer);
+    write(conn_fd, ka_buffer, 320);
 
     free(kb_buffer);
     free(ka_buffer);
