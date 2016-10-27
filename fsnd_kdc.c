@@ -20,6 +20,7 @@ int run_kdc()
     printf("Please enter Kb: ");
     scanf("%s", kb_response);
     
+/* TODO: dynamic port */
     listen_fd = socket_listen("9286", true);
 
     if(listen_fd < 0)
@@ -36,15 +37,26 @@ int run_kdc()
     unsigned long int nonce_int = atol(nonce);
     printf("nonce received: %lu\n", nonce_int); 
     
-    /*
     Blowfish ks_ctx;
     
+    // Encrypts with KB
     ks_ctx.Set_Passwd(kb_response);
-    ks_ctx.Encrypt(ks_response, 4);
+
+    /* char buffer[128] = ""; */
+    char *buffer = (char*)calloc(128, sizeof(char));
     printf("ks: %s\n", ks_response);
-    ks_ctx.Decrypt(ks_response, sizeof(ks_response)); 
-    printf("ks: %s\n", ks_response);
-    */
+    char ida[64] = "thing1.cs.uwec.edu";
+
+    memcpy(buffer, ks_response, sizeof(ks_response));
+    memcpy(buffer+sizeof(ks_response), ida, sizeof(ida)+1);
+
+    printf("Buffer: %s\n", buffer);
+
+    ks_ctx.Encrypt(buffer, sizeof(buffer));
+    ks_ctx.Decrypt(buffer, sizeof(buffer)); 
+    printf("decrypted buffer: %s\n", buffer);
+
+    free(buffer);
 
 
     return rc;
