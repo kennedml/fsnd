@@ -239,3 +239,18 @@ int hex_to_ascii(char c, char d){
   int low = hex_to_int(d);
   return high+low;
 }
+
+char* hex_to_string(char *str){
+  char temp[4096];
+  char buff;
+  for(int i = 0; i < (int)strlen(str); i++){
+    if (i % 2 != 0){
+      sprintf(temp, "%s%c", temp, hex_to_ascii(buff, str[i]));
+    } else{
+      buff = str[i];
+    }
+  }
+  temp[strlen(temp)] = '\0';
+  str = temp;
+  return str;
+}
