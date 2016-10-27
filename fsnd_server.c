@@ -68,15 +68,54 @@ int fsnd_listen(char* file, bool is_verbose)
   printf("id_a: %s\n", id_a);
   
  
+  // null terminates session_key at end of key for blowfish password
+  for (int i = 0; i < 64; i++){
+    if(session_key[i] == ' '){
+      session_key[i] = '\0';
+      break;
+    }
+  }
+  printf("session_key truncated: %s\n", session_key);
+
   // Send nonce b over socket encrypted with session key
   Blowfish ctx_session;
-  ctx_session.Set_Passwd((char*)"ks");
+  ctx_session.Set_Passwd(session_key);
   ctx_session.Encrypt(nonce, 64);
   printf("En(Nonce): %s\n", nonce);
   //ctx_session.Decrypt(nonce, 64);
   //printf("De(nonce: %s\n", nonce);
 
   write(conn_fd, nonce, 64);
+
+  //TODO: This should decrypt original and IDA nonce for verification
+  //Currently not working
+
+  //read nonce back from client
+  /* char *f_anonce = (char*)malloc(64); */
+  /* read(conn_fd, f_anonce, 64); */
+  /* ctx_session.Decrypt(f_anonce, 64); */
+
+
+  /* ctx_session.Decrypt(nonce, 64); */
+
+  /* // null terminates nonce at end of key for function */
+  /* for (int i = 0; i < 64; i++){ */
+  /*   if(nonce[i] == ' '){ */
+  /*     nonce[i] = '\0'; */
+  /*     break; */
+  /*   } */
+  /* } */
+  /* for (int i = 0; i < 64; i++){ */
+  /*   if(f_anonce[i] == ' '){ */
+  /*     f_anonce[i] = '\0'; */
+  /*     break; */
+  /*   } */
+  /* } */
+  /* unsigned long int f_bnonce = generate_nonce(atol(f_anonce)); */
+  /* unsigned long int orig_fnonce = generate_nonce(atol(nonce)); */
+  /* printf("function nonce: %lu\n", f_bnonce); */
+  /* printf("function nonce: %lu\n", orig_fnonce); */
+  /* printf("check: %d\n", f_bnonce == orig_fnonce); */
 
   int sum = 0;
   int received = 0;

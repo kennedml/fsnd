@@ -77,10 +77,36 @@ int fsnd_client(char* file, bool is_verbose)
   char *nonce_b = (char*)malloc(64);
   read(server_sockfd, nonce_b, 64);
 
+  // null terminates session_key at end of key for blowfish password
+  for (int i = 0; i < 64; i++){
+    if(session_key[i] == ' '){
+      session_key[i] = '\0';
+      break;
+    }
+  }
+  printf("session_key truncated: %s\n", session_key);
+
   Blowfish ctx_session;
-  ctx_session.Set_Passwd((char*)"ks");
+  ctx_session.Set_Passwd(session_key);
   ctx_session.Decrypt(nonce_b, 64);
   printf("nonce b: %s\n", nonce_b);
+
+  //TODO: send function nonce to server, not working properly
+  // null terminates nonce at end of key for function
+  /* for (int i = 0; i < 64; i++){ */
+  /*   if(nonce_b[i] == ' '){ */
+  /*     nonce_b[i] = '\0'; */
+  /*     break; */
+  /*   } */
+  /* } */
+
+  /* unsigned long int f_bnonce = generate_nonce(atol(nonce_b)); */
+  /* printf("function nonce: %lu\n", f_bnonce); */
+  /* sprintf(nonce_b, "%-64lu", f_bnonce); */ 
+
+  /* ctx_session.Encrypt(nonce_b, 64); */
+
+  /* write(server_sockfd, nonce_b, 64); */
 
   FILE *fp;
   fp = fopen(file, "rb");

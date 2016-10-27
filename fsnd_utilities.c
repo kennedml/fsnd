@@ -206,6 +206,7 @@ bool is_valid_file(char *path)
 }
 
 unsigned long int generate_nonce(long nonce) {
+  printf("g nonce: %lu\n", nonce);
     const long A = 48271;
     const long M = 2147483647;
     const long Q = M/A;
@@ -214,10 +215,14 @@ unsigned long int generate_nonce(long nonce) {
 	static long state = 1;
 	long t = A * (state % Q) - R * (state / Q);
 	
-	if (t > 0)
+	if (t > 0){
 		state = t;
-	else
+  }else{
 		state = t + M;
+  }
+  printf("state: %lu\n", state);
+  printf("state/M: %lu M: %lu\n", (long)((double)state/M), M);
+  printf("return: %lu\n", state/M * nonce);
 	return (long)(((double) state/M)* nonce);
 }
 
