@@ -226,4 +226,16 @@ unsigned long int generate_nonce(long nonce) {
 	return (long)(((double) state/M)* nonce);
 }
 
+int hex_to_int(char c){
+  int first = c / 16 - 3;
+  int second = c % 16;
+  int res = first*10 + second;
+  if(res > 9) res--;
+  return res;
+}
 
+int hex_to_ascii(char c, char d){
+  int high = hex_to_int(c) * 16;
+  int low = hex_to_int(d);
+  return high+low;
+}

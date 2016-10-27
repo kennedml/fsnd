@@ -1,4 +1,5 @@
 #include "fsnd_client.h"
+#include <string>
 
 int fsnd_client(char* file, bool is_verbose)
 {
@@ -108,6 +109,46 @@ int fsnd_client(char* file, bool is_verbose)
 
   /* write(server_sockfd, nonce_b, 64); */
 
+  char str[1024];
+  char temp[1024];
+  std::string hex_str;
+  printf("Enter String: ");
+  scanf("%s", str);
+  printf("String: %s\n", str);
+
+  int i, j;
+
+  for(i = 0; i < (int)strlen(str); i++, j+=2){
+    sprintf((char*)temp+j, "%02X", str[i]);
+  }
+
+  temp[j] = '\0';
+  printf("Hex: %s\n", temp);    
+  hex_str = temp;
+
+  while(hex_str.length() % 8){
+    hex_str += ' '; 
+  }
+
+  ctx_session.Encrypt((void*)hex_str.c_str(), hex_str.length());
+  printf("En(Hex_str): %s\n", hex_str.c_str());
+  ctx_session.Decrypt((void*)hex_str.c_str(), hex_str.length());
+  printf("Dec(Hex_str): %s\n", hex_str.c_str());
+
+  char buff = 0;
+  char *hex_to_str = (char*)malloc(BUFSIZ);
+  for(i = 0; i < (int)hex_str.length(); i++){
+    if (i % 2 != 0){
+      sprintf(hex_to_str, "%s%c", hex_to_str, hex_to_ascii(buff, hex_str[i]));
+    } else{
+      buff = hex_str[i];
+    }
+  }
+
+  fflush(stdout);
+  printf("Returned to String: %s\n", hex_to_str);
+
+
   FILE *fp;
   fp = fopen(file, "rb");
   if(!fp)
@@ -162,12 +203,13 @@ int fsnd_client(char* file, bool is_verbose)
 
     }
   }
-  free(source);
   free(session_key);
   free(nonce);
   free(request);
   free(enc_b);
   free(nonce_b);
+  free(hex_to_str);
+  free(source);
   fclose(fp);
   close(server_sockfd);
   close(kdc_sockfd);

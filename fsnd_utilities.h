@@ -36,5 +36,7 @@ int parse_args(int argc, char **argv);
 int print_help();
 bool is_valid_file(char *path);
 unsigned long int generate_nonce(long nonce);
+int hex_to_int(char c);
+int hex_to_ascii(char c, char d);
 
 #endif
