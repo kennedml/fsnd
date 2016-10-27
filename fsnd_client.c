@@ -64,7 +64,7 @@ int fsnd_client(char* file, bool is_verbose)
 	printf("Session key encrypted with private key B from KDC:  %s\n", enc_b);
 
 
-	server_sockfd = socket_dial(fsnd_host, fsnd_port, is_verbose);
+	server_sockfd = socket_dial("thing2.cs.uwec.edu", "9286", is_verbose);
 
 	if (server_sockfd < 0)
 	{
